@@ -9,11 +9,6 @@ import { Routes, Route, useNavigate } from "react-router-dom"
 import { useEffect, useContext, useState } from "react";
 import { LoginContext } from "./components/ContextProvider/Context";
 import LinearProgress from '@mui/material/LinearProgress';
-import ProjRegister from "./components/addproj/ProjRegister";
-import Details from "./components/addproj/Details";
-import ViweProj from "./components/addproj/ViweProj";
-import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import '../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js';
 
 
 function App() {
@@ -60,18 +55,13 @@ function App() {
       {
         data ? (
           <>
-            {/* <Header /> */}
+            <Header />
 
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path='/register' element={<Register />} />
               <Route path='/dash' element={<Dashbord />} />
               <Route path='*' element={<Error />} />
-              <Route path='/preg' element={<ProjRegister />} />
-              <Route path='/details' element={<Details />} />
-              <Route path='/viweproj' element={<ViweProj />} />
-              
-              
             </Routes>
           </>
 

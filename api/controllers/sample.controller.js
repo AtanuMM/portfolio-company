@@ -1,8 +1,9 @@
 const {db : {User , }}=require("../models")
 const { userRegister,userLogin } = require ("../services/sample.service.js")
  
- const getUsers = async(req, res) => {
+ const getUsers = async(req,res) => {
     try {
+        console.log("okk");
         const users = await User.findAll({
             attributes:['id','name','email']
         });
@@ -53,7 +54,7 @@ const { userRegister,userLogin } = require ("../services/sample.service.js")
     });
     if(!user[0]) return res.sendStatus(204);
     const userId = user[0].id;
-    await Users.update({refresh_token: null},{
+    await User.update({refresh_token: null},{
         where:{
             id: userId
         }

@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
-import "./Mix.css"
-import { NavLink } from 'react-router-dom'
+import { NavLink } from "react-router-dom"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import "./mix.css"
 
 const Register = () => {
+
     const [passShow, setPassShow] = useState(false);
-    const [cpassShow, setcPassShow] = useState(false);
+    const [cpassShow, setCPassShow] = useState(false);
+
     const [inpval, setInpval] = useState({
         fname: "",
         email: "",
@@ -12,13 +16,11 @@ const Register = () => {
         cpassword: ""
     });
 
-    //console.log(inpval);
 
-    //onchange method when user inputs data
     const setVal = (e) => {
-        //console.log(e.target.value);
+        // console.log(e.target.value);
         const { name, value } = e.target;
-        //storeing values in my setInp state
+
         setInpval(() => {
             return {
                 ...inpval,
@@ -27,31 +29,49 @@ const Register = () => {
         })
     };
 
-    const addUserdata = async(e) => {
+    const addUserdata = async (e) => {
         e.preventDefault();
 
-        const { fname, email, password, cpassword } = inpval
+        const { fname, email, password, cpassword } = inpval;
 
-        if (fname == "") {
-            alert('please enter the name')
-        } else if (email == "") {
-            alert('plz entr email');
-        } else if (!email.includes('@')) {
-            alert('enter valid email')
-        } else if (password == "") {
-            alert('please enter password')
+        if (fname === "") {
+            toast.warning("fname is required!", {
+                position: "top-center"
+            });
+        } else if (email === "") {
+            toast.error("email is required!", {
+                position: "top-center"
+            });
+        } else if (!email.includes("@")) {
+            toast.warning("includes @ in your email!", {
+                position: "top-center"
+            });
+        } else if (password === "") {
+            toast.error("password is required!", {
+                position: "top-center"
+            });
         } else if (password.length < 6) {
-            alert('password shoud more than 6 charecter')
-        } else if (cpassword == "") {
-            alert('please enter confirm password')
-        } else if (cpassword.length < 6) {
-            alert('password shoud more than 6 charecter')
+            toast.error("password must be 6 char!", {
+                position: "top-center"
+            });
+        } else if (cpassword === "") {
+            toast.error("cpassword is required!", {
+                position: "top-center"
+            });
+        }
+        else if (cpassword.length < 6) {
+            toast.error("confirm password must be 6 char!", {
+                position: "top-center"
+            });
         } else if (password !== cpassword) {
-            alert('password and confirm password not mached')
+            toast.error("pass and Cpass are not matching!", {
+                position: "top-center"
+            });
         } else {
-            // console.log("registered sucessful");
+            // console.log("user registration succesfully done");
 
-            const data = await fetch('/register', {
+
+            const data = await fetch("/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -62,11 +82,13 @@ const Register = () => {
             });
 
             const res = await data.json();
-            console.log(res.status);
-            
-            if(res.status == 201){
-                alert('user registration done');
-                setInpval({...inpval, fname: '', email:'', password:'', cpassword:''})
+            // console.log(res.status);
+
+            if (res.status === 201) {
+                toast.success("Registration Successfully done 😃!", {
+                    position: "top-center"
+                });
+                setInpval({ ...inpval, fname: "", email: "", password: "", cpassword: "" });
             }
         }
     }
@@ -74,33 +96,26 @@ const Register = () => {
     return (
         <>
             <section>
-                <div className='form_data'>
+                <div className="form_data">
                     <div className="form_heading">
                         <h1>Sign Up</h1>
-                        <p style={{ textAlign: "center" }}> Not an User ? Please SignUp here</p>
+                        <p style={{ textAlign: "center" }}>We are glad that you will be using Project Cloud to manage <br />
+                            your tasks! We hope that you will get like it.</p>
                     </div>
 
                     <form>
                         <div className="form_input">
-                            <label htmlFor="email">Name</label>
-                            <div className="two">
-                                <input type="text" onChange={setVal} value={inpval.fname} name="fname" id="fname" placeholder='Enter Your Name' />
-                            </div>
+                            <label htmlFor="fname">Name</label>
+                            <input type="text" onChange={setVal} value={inpval.fname} name="fname" id="fname" placeholder='Enter Your Name' />
                         </div>
-
-
                         <div className="form_input">
                             <label htmlFor="email">Email</label>
-                            <div className="two">
-                                <input type="email" onChange={setVal} value={inpval.email} name="email" id="email" placeholder='Enter Your Email Address' />
-                            </div>
+                            <input type="email" onChange={setVal} value={inpval.email} name="email" id="email" placeholder='Enter Your Email Address' />
                         </div>
-
-
                         <div className="form_input">
                             <label htmlFor="password">Password</label>
                             <div className="two">
-                                <input type={!passShow ? "password" : "text"} onChange={setVal} value={inpval.password} name="password" id="password" placeholder='Enter Your password' />
+                                <input type={!passShow ? "password" : "text"} value={inpval.password} onChange={setVal} name="password" id="password" placeholder='Enter Your password' />
                                 <div className="showpass" onClick={() => setPassShow(!passShow)}>
                                     {!passShow ? "Show" : "Hide"}
                                 </div>
@@ -110,17 +125,17 @@ const Register = () => {
                         <div className="form_input">
                             <label htmlFor="password">Confirm Password</label>
                             <div className="two">
-                                <input type={!cpassShow ? "password" : "text"} onChange={setVal} value={inpval.cpassword} name="cpassword" id="cpassword" placeholder='Confirm password' />
-                                <div className="showpass" onClick={() => setcPassShow(!cpassShow)}>
+                                <input type={!cpassShow ? "password" : "text"} value={inpval.cpassword} onChange={setVal} name="cpassword" id="cpassword" placeholder='Confirm password' />
+                                <div className="showpass" onClick={() => setCPassShow(!cpassShow)}>
                                     {!cpassShow ? "Show" : "Hide"}
                                 </div>
                             </div>
                         </div>
-                        <button className='btn' onClick={addUserdata} >SignUp</button>
-                        <p>
-                            Already have an account? <NavLink to="/">Log In</NavLink>
-                        </p>
+
+                        <button className='btn' onClick={addUserdata}>Sign Up</button>
+                        <p>Already have an account? <NavLink to="/">Log In</NavLink></p>
                     </form>
+                    <ToastContainer />
                 </div>
             </section>
         </>

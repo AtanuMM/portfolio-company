@@ -6,7 +6,6 @@ export const LoginContext = createContext("");
 const Context = ({children}) => {
 
     const [logindata,setLoginData] = useState("");
-    
 
   return (
     <>

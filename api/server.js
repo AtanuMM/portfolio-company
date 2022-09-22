@@ -1,20 +1,24 @@
 "use strict";
 // require('rootpath')();
-require("dotenv").config();
+require('dotenv').config();
 const express = require("express");
-
 const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
+const router = require ('./routes/sample.route.js');
+const {connectDatabase} = require('./models')
+
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 app.use(morgan("dev"));
+app.use(router);
+
 
 const PORT = parseInt(process.env.APP_PORT) || 8081;
-
+connectDatabase()
 if (process.env.APP_SECURE == "true") {
 	var options = {
 		key: fs.readFileSync(process.env.SSLKEY),

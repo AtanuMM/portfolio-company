@@ -3,6 +3,20 @@ const bcrypt = require( "bcryptjs");
 const jwt = require ("jsonwebtoken");
 const {db : {User  }}=require("../models")
 
+
+const userGet = async (req, res) => {
+try {
+    console.log("okk");
+    let userGetall = await User.findAll({
+        attributes:['id','name','email']
+    });
+   return userGetall;
+} catch (error) {
+    console.log(error);
+    return false;
+}
+}
+
  const userRegister = async (req, res) => {
     try {
         console.log("OKKKKK")
@@ -74,4 +88,4 @@ const {db : {User  }}=require("../models")
 
 
 
-module.exports = { userRegister,userLogin }
+module.exports = { userRegister,userLogin,userGet }

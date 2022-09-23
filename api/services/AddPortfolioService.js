@@ -26,36 +26,35 @@ const userAdd = async (req, res) => {
     }
 }
 
+
 const userEdit =async(req, res)=>{
-    try {
-        console.log("OKKKKK")
-        const {id} = req.params;
-
-        const updateuser = await AddPortfolio.findByIdAndUpdate(id,req.body,{
-            new: true
-        });
-        return updateuser;
-
-    }  catch (error) {
-        console.log(error);
-        return false;
-        
-    }
+try {
+    const updateuser = await AddPortfolio.update(req.body,{
+        where:{
+            id:req.params.id
+        }
+    })
+    return updateuser;
+  } catch (err) {
+    console.log(err)
+  }
 }
+
+
 
 const userDelete =  async(req, res)=>{
     try {
-        const {id} = req.params;
-
-        const deleteuser = await users.findByIdAndDelete({_id:id});
-
-        return deleteuser;
-
-    } catch (error) {
-        console.log(error);
-        return false;
+        return !!await AddPortfolio.destroy({
+            where: {
+                id:req.params.id
+            }
+        });
+    } catch (err) {
+        console.log(err);;
     }
+
 }
+
 
 
 

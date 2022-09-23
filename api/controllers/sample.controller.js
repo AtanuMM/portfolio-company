@@ -1,16 +1,20 @@
 const {db : {User , }}=require("../models")
-const { userRegister,userLogin } = require ("../services/sample.service.js")
+const { userRegister,userLogin,userGet } = require ("../services/sample.service.js")
  
  const getUsers = async(req,res) => {
     try {
-        console.log("okk");
-        const users = await User.findAll({
-            attributes:['id','name','email']
-        });
-        res.json(users);
+        let userGetController = await userGet(req,res)
+        //console.log(userLoginController,`line 38`)
+        if(userGetController){
+            res.status(200).json({msg: "Find User", code:200, status:true, data:userRegisterController});
+        }else{
+            res.status(400).json({msg: "failed", code:400, status:false, data:userRegisterController});
+        }
     } catch (error) {
         console.log(error);
+        res.status(500).json({msg: "Internal Server Error", code:500, status:false, error:error});
     }
+  
 }
  
  const Register = async(req, res) => {

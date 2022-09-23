@@ -6,13 +6,13 @@ const { Addcontent,Update,Delete } = require ("../controllers/AddportfolioContro
  
 const router = express.Router();
  
-router.get('/users', verifyToken, getUsers);
+router.get('/user', verifyToken, getUsers);
 router.post('/users/add', Register);
 router.post('/login', Login);
 router.get('/token', refreshToken);
 router.post('/content/add', Addcontent);
-router.patch('/content/edit', Update);
-router.delete('/content/delete', Delete);
+router.patch('/content/add/:id', Update);
+router.delete('/content/add/:id', Delete);
 router.delete('/logout', Logout);
  
 module.exports = router ;

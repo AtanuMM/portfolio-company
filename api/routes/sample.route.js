@@ -6,7 +6,7 @@ const { Addcontent,Update,Delete } = require ("../controllers/AddportfolioContro
  
 const router = express.Router();
  
-router.get('/user', verifyToken, getUsers);
+router.get('/users/add', getUsers);
 router.post('/users/add', Register);
 router.post('/login', Login);
 router.get('/token', refreshToken);

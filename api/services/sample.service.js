@@ -4,19 +4,6 @@ const jwt = require ("jsonwebtoken");
 const {db : {User  }}=require("../models")
 
 
-const userGet = async (req, res) => {
-try {
-    console.log("okk");
-    let userGetall = await User.findAll({
-        attributes:['id','name','email']
-    });
-   return userGetall;
-} catch (error) {
-    console.log(error);
-    return false;
-}
-}
-
  const userRegister = async (req, res) => {
     try {
         console.log("OKKKKK")
@@ -40,7 +27,8 @@ try {
     try {
         let user = await User.findAll({
             where: {
-                email: req.body.email
+                email: req.body.email,
+
             }
         });
         const match = await bcrypt.compare(req.body.password, user[0].password);
@@ -88,4 +76,4 @@ try {
 
 
 
-module.exports = { userRegister,userLogin,userGet }
+module.exports = { userRegister,userLogin }

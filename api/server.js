@@ -9,10 +9,9 @@ const morgan = require("morgan");
 const router = require ('./routes/sample.route.js');
 const {connectDatabase} = require('./models')
 
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({ credentials:true, origin:'http://localhost:3000' }));
 app.use(morgan("dev"));
 app.use(router);
 

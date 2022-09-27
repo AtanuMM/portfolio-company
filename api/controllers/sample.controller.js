@@ -3,9 +3,13 @@ const { userRegister,userLogin } = require ("../services/sample.service.js")
  
  const getUsers = async(req,res) => {
     try {
-        console.log("okk");
-        const users = await User.findAll(req.body,{
-            attributes:['id','name','email']
+        console.log(req.body,"6");
+        const users = await User.findAll({
+            
+            attributes: {
+                exclude: ['password']
+            },
+            
         });
         res.json(users);
     } catch (error) {
@@ -35,7 +39,7 @@ const { userRegister,userLogin } = require ("../services/sample.service.js")
         if(userLoginController){
             res.status(200).json({msg: "Login Successful", code:200, status:true, data:userLoginController});
         }else{
-            res.status(400).json({msg: "Email not found", code:400, status:false, data:userLoginController});
+            res.status(400).json({msg: "Invalid email or password", code:400, status:false, data:userLoginController});
         }
     } catch (error) {
         console.log(error);

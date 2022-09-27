@@ -1,5 +1,6 @@
 'use strict'
 
+const { where } = require("sequelize");
 const {db : {AddPortfolio ,}}=require("../models")
 
 const userAdd = async (req, res) => {
@@ -16,7 +17,8 @@ const userAdd = async (req, res) => {
             Isapp: Isapp,
             psl: psl,
             asl: asl,
-            desc: desc
+            desc: desc,
+            // isActive:true
         });
         //UserModel.findAll({})
         return userCreate;
@@ -44,18 +46,66 @@ try {
 
 const userDelete =  async(req, res)=>{
     try {
-        return !!await AddPortfolio.destroy({
-            where: {
-                id:req.params.id
-            }
-        });
-    } catch (err) {
+        let projectId=req.params.id
+        let date= new Date()
+       let findProject= await AddPortfolio.findOne({where:{id:projectId}})
+        if(findProject==null){
+            return false
+        } 
+        else {
+            let projectSoftDel= await AddPortfolio.update(
+                {
+                    isDeleted:true,
+                    deletedAt:date 
+                }, 
+                {
+                where: {
+                    id:projectId
+                }
+              }
+              );
+             
+              return projectSoftDel
+              
+        }
+        
+        
+   
+
+    } 
+       catch (err) {
         console.log(err);;
     }
+}
 
+const contentGet =  async(req, res)=>{
+    try {
+        let findAll=await AddPortfolio.findAll({
+            where:{
+                isDeleted:false,
+                deletedAt:null 
+            }
+           })
+           console.log(findAll,`line 76`)
+           return findAll;
+    } catch (error) {
+        console.log(err);
+    }
 }
 
 
 
+//     const usraldel =async(req, res)=>{
+//         try {
+//             let projectIdt=req.params.id       
+//        let findProjectt= await AddPortfolio.findOne({where:{id:projectIdt}})
+//        if (findProjectt == true) {
+//         return false
+//        } else {
+//        }
+//         } catch (error) {
+//             throw error
+//         }
+//     }
 
-module.exports = { userAdd,userEdit,userDelete  }
+module.exports = { userAdd,userEdit,userDelete,contentGet }

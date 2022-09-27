@@ -1,17 +1,22 @@
 const {db : {User , }}=require("../models")
 const jwt = require ("jsonwebtoken");
- 
- const refreshToken = async(req, res) => {
+// const { StringDecoder } = require('node:string_decoder');
+// const decoded = new StringDecoder('utf8');
+const refreshToken = async(req, res) => {
     try {
-        const refreshToken = req.cookies.refreshToken;
-        if(!refreshToken) return res.sendStatus(401);
+        const validToken = req.body.refreshToken;
+        if(!validToken) 
+        {
+            return res.sendStatus(401);
+        }else{
         const user = await User.findAll({
             where:{
-                refresh_token: refreshToken
+                refresh_token: validToken
             }
         });
+    
         if(!user[0]) return res.sendStatus(403);
-        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+        jwt.verify(validToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
             if(err) return res.sendStatus(403);
             const userId = user[0].id;
             const name = user[0].name;
@@ -21,6 +26,7 @@ const jwt = require ("jsonwebtoken");
             });
             res.json({ accessToken });
         });
+    }
     } catch (error) {
         console.log(error);
     }

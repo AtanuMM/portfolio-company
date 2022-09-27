@@ -3,6 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
+  
   class AddPortfolio extends Model {
     /**
      * Helper method for defining associations.
@@ -23,7 +24,9 @@ module.exports = (sequelize, DataTypes) => {
     Isapp: DataTypes.STRING,
     psl: DataTypes.STRING,
     asl: DataTypes.STRING,
-    desc: DataTypes.STRING
+    desc: DataTypes.STRING,
+    isDeleted: DataTypes.BOOLEAN,
+    deletedAt:DataTypes.DATE
   }, {
     sequelize,
     modelName: 'AddPortfolio',

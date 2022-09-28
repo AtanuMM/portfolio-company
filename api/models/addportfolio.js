@@ -2,6 +2,8 @@
 const {
   Model
 } = require('sequelize');
+const { Sequelize} = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   
   class AddPortfolio extends Model {
@@ -15,13 +17,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   AddPortfolio.init({
-    category: DataTypes.STRING,
+    category:{
+      type: Sequelize.JSON
+    },
     projectName: DataTypes.STRING,
-    Tstack: DataTypes.STRING,
+    Tstack:{
+      type: Sequelize.JSON
+    },
     Llink: DataTypes.STRING,
     Dlink: DataTypes.STRING,
     Ldate: DataTypes.STRING,
-    Isapp: DataTypes.STRING,
+    Isapp: DataTypes.BOOLEAN,
     psl: DataTypes.STRING,
     asl: DataTypes.STRING,
     desc: DataTypes.STRING,

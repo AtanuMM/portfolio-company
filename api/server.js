@@ -1,5 +1,6 @@
 "use strict";
 // require('rootpath')();
+const cookieParser = require ("cookie-parser");
 require('dotenv').config();
 const express = require("express");
 const app = express();
@@ -12,6 +13,7 @@ const {connectDatabase} = require('./models')
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors({ credentials:true, origin:'http://localhost:3000' }));
+app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(router);
 

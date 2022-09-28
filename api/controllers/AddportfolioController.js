@@ -54,8 +54,6 @@ const Delete = async(req, res) => {
         console.log(userDeleteController)
         if(userDeleteController){
             res.status(200).json({msg: "Delete Successful", code:200, status:true, data:userDeleteController});
-        }else if(userDeleteController){
-            res.status(400).json({msg: "already deleted", code:400, status:false, data:userDeleteController});
         }
         else {
             res.status(400).json({msg: "Delete UnSuccessful", code:400, status:false, data:userDeleteController});

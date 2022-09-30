@@ -6,7 +6,9 @@ const Register = () =>{
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const[passShow,setPassShow]= useState(false)
     const [confPassword, setConfPassword] = useState('');
+    const[cpassShow,setcPassShow]= useState(false)
     const [msg, setMsg] = useState('');
     const navigate = useNavigate();
     const Signup = async (e) =>{
@@ -70,16 +72,28 @@ const Register = () =>{
                                         <input type="text" className="input" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
                                     </div>
                                 </div>
-                                <div className="field mt-5">
+                                <div className="form_input">
                                     <label className="label">Password</label>
-                                    <div className="controls">
-                                        <input type="password" className="input" placeholder="******" value={password} onChange={(e) => setPassword(e.target.value)} />
+                                    <div className="two">
+                                        <input type={!passShow ? "password" : "text"} className="input"  placeholder="******" value={password} onChange={(e) => setPassword(e.target.value)} />
+                                        <div className='showpass' onClick={()=>setPassShow(!passShow)}>
+                                            {!passShow ? "Show" : "Hide"}
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="field mt-5">
+                                {/* <div className="field mt-5">
                                     <label className="label">Confirm Password</label>
                                     <div className="controls">
                                         <input type="password" className="input" placeholder="******" value={confPassword} onChange={(e) => setConfPassword(e.target.value)} />
+                                    </div>
+                                </div> */}
+                                 <div className="form_input">
+                                    <label className="label">Confirm Password</label>
+                                    <div className="two">
+                                        <input type={!cpassShow ? "password" : "text"} className="input"  placeholder="******" value={confPassword} onChange={(e) => setConfPassword(e.target.value)} />
+                                        <div className='showpass' onClick={()=>setcPassShow(!cpassShow)}>
+                                            {!cpassShow ? "Show" : "Hide"}
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="field mt-5">

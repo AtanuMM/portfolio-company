@@ -20,6 +20,9 @@ module.exports = (sequelize, DataTypes) => {
     category:{
       type: Sequelize.JSON
     },
+    industry:{
+      type: Sequelize.JSON
+    },
     projectName: DataTypes.STRING,
     Tstack:{
       type: Sequelize.JSON
@@ -29,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
     Ldate: DataTypes.STRING,
     Isapp: DataTypes.BOOLEAN,
     psl: DataTypes.STRING,
-    asl: DataTypes.STRING,
+    asl: DataTypes.STRING,    
     desc: DataTypes.STRING,
     isDeleted: DataTypes.BOOLEAN,
     deletedAt:DataTypes.DATE

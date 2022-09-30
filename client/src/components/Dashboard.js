@@ -73,6 +73,7 @@ const Dashboard = () => {
             setExpire(decoded.exp);
         } catch (error) {
             if (error.response) {
+                history("/")
             }
         }
     }
@@ -103,12 +104,62 @@ const Dashboard = () => {
         });
         setUsers(response.data);
     }
+
+   
+    
+        const Logout = async () => {
+            try {
+                await axios.delete('http://localhost:5005/logout');
+                history("/");
+            } catch (error) {
+                console.log(error);
+            }
+        }
  
     
     return (
         <div className="container mt-5">
 
             <h1>Welcome Back: {name}</h1>
+            <nav className="navbar is-light" role="navigation" aria-label="main navigation">
+            <div className="container">
+                <div className="navbar-brand">
+
+
+                    <a href="/" role="button" className="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                    </a>
+                </div>
+
+                <div id="navbarBasicExample" className="navbar-menu">
+                    <div className="navbar-start">
+                        <a href="/login" className="navbar-item">
+                            Home
+                        </a>
+                        <a href="/" className="navbar-item">
+                            Register
+                        </a>
+                        <a href="/dashboard" className="navbar-item">
+                        Dashboard
+                        </a>
+                       
+                    </div>
+                    <div className="navbar-end">
+                        <div className="navbar-item">
+                            <div className="buttons">
+                                <button onClick={Logout} className="button is-light">
+                                    Log Out
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    
+
 
             <header>
                 <nav>
@@ -163,7 +214,7 @@ const Dashboard = () => {
                                 {[''].map((text, index) => (
                                     <ListItem key={text} disablePadding>
                                         <ListItemButton>
-                                            <NavLink to='/viewproj'> <button className="btn btn-secondary">view Data</button></NavLink>
+                                            <NavLink to='/viewData'> <button className="btn btn-secondary">view Data</button></NavLink>
                                             {/* <ListItemIcon>
                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
               </ListItemIcon> */}

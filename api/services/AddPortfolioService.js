@@ -6,9 +6,10 @@ const {db : {AddPortfolio ,}}=require("../models")
 const userAdd = async (req, res) => {
     try {
         console.log("OKKKKK")
-        const { category, projectName, Tstack, Llink, Dlink, Ldate, Isapp, psl, asl, desc } = req.body;
+        const { category,industry, projectName, Tstack, Llink, Dlink, Ldate, Isapp, psl, asl, desc } = req.body;
         let userCreate = await AddPortfolio.create({
             category: category,
+            industry: industry,
             projectName: projectName,
             Tstack: Tstack,
             Llink: Llink,

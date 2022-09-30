@@ -4,11 +4,21 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { Box, TextField, MenuItem } from '@mui/material';
 import { LoginContext } from '../components/Context';
 import { useEffect } from 'react';
+import axios from 'axios';
+import jwt_decode from "jwt-decode"; 
 
 
 export default function ProjectRegistration() {
     const navigate = useNavigate("");
     const history = useNavigate("");
+    const [name, setName] = useState('');
+    const [token, setToken] = useState('');
+    const [expire, setExpire] = useState('');
+    const [users, setUsers] = useState([]); 
+    useEffect(() => {
+        refreshToken();
+        
+    }, []);
     const { logindata, setLoginData } = useContext(LoginContext);
 
     const [toggle, setToggle] = useState(false)
@@ -18,35 +28,19 @@ export default function ProjectRegistration() {
         setToggle(!toggle)
     }
     // the auth user gateway
-    const PregdValid = async () => {
-        let token = localStorage.getItem("usersdatatoken");
-
-        const res = await fetch("http://localhost:5005/token", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": token
+    const refreshToken = async () => {
+        try {
+            const response = await axios.get('http://localhost:5005/token');
+            setToken(response.data.accessToken);
+            const decoded = jwt_decode(response.data.accessToken);
+            setName(decoded.name);
+            setExpire(decoded.exp);
+        } catch (error) {
+            if (error.response) {
+                history("/")
             }
-        });
-        const data = await res.json();
-
-        if (data.status == 401 || !data) {
-            history("*");
-        } else {
-            console.log("user verify");
-            setLoginData(data);
-
         }
     }
-
-    useEffect(() => {
-        setTimeout(() => {
-            PregdValid();
-            setData(true)
-        })
-
-    }, [])
-
 
 
 
@@ -54,8 +48,9 @@ export default function ProjectRegistration() {
     // belowing part is for form data receving logic 
 
     const [inpVal, setInp] = useState({
-        Auther:logindata ? logindata.ValidUserOne.fname : "",
+        // Auther:logindata ? logindata.ValidUserOne.fname : "",
         category: [],
+        industry:[],
         projectName: '',
         Tstack: [],
         Llink: '',
@@ -90,14 +85,14 @@ export default function ProjectRegistration() {
 
     const addinpdata = async (e) => {
         e.preventDefault();
-        const { category, projectName, Tstack, Llink, Dlink, Ldate, Isapp, psl, asl, desc } = inpVal
+        const { category,industry, projectName, Tstack, Llink, Dlink, Ldate, Isapp, psl, asl, desc } = inpVal
 
         const res = await fetch("http://localhost:5005/content/add", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({  category, projectName, Tstack, Llink, Dlink, Ldate, Isapp, psl, asl, desc })
+            body: JSON.stringify({  category,industry, projectName, Tstack, Llink, Dlink, Ldate, Isapp, psl, asl, desc })
         });
         const data = await res.json();
         console.log(data);
@@ -107,7 +102,7 @@ export default function ProjectRegistration() {
             console.log("error");
         } else {
             alert("data added");
-            history("/abc")
+            history("/viewData")
         }
 
     }
@@ -232,7 +227,7 @@ export default function ProjectRegistration() {
 
 
                         {/* Multi Check Box */}
-                        {/* <div className="mb-3 col-lg-6 col-md-6 col-12">
+                        <div className="mb-3 col-lg-6 col-md-6 col-12">
 
                             <Box width='250px'>
                                 <TextField label='Select Industry'
@@ -246,13 +241,13 @@ export default function ProjectRegistration() {
                                     name='industry'
                                     helperText='please select your Industry '
                                 >
-                                    <MenuItem value='IT , '>IT 1</MenuItem>
+                                    <MenuItem value='IT , '>IT </MenuItem>
                                     <MenuItem value='Software , '>Software </MenuItem>
                                     <MenuItem value='Freelince, '>Freelince </MenuItem>
                                     <MenuItem value='Graphics, '>Graphics </MenuItem>
                                 </TextField>
                             </Box>
-                        </div> */}
+                        </div>
 
 
                     </div>
@@ -293,6 +288,10 @@ export default function ProjectRegistration() {
                             </Box>
 
                         </div>
+                        <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
+                       <label for="exampleInputPassword1" className="form-label">date</label>
+                          <input type="date" value={inpVal.Ldate} onChange={setData} name='Ldate' className="form-control" id="exampleInputPassword1" />
+                         </div>
 
                         <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
                             <label for="exampleInputPassword1" className="form-label">Live link</label>

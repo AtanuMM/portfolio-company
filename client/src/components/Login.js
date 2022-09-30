@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [email, setEmail] = useState('');
+    const[passShow,setPassShow]= useState(false)
     const [password, setPassword] = useState('');
     const [msg, setMsg] = useState('');
     const navigate = useNavigate();
@@ -25,7 +26,7 @@ const Login = () => {
     }
  
     return (
-        <section className="h">
+        <section >
             <div className="hero-body">
                 <div className="container">
                     <div className="columns is-centered">
@@ -38,10 +39,13 @@ const Login = () => {
                                         <input type="text" className="input" placeholder="Enter Your Email" value={email} onChange={(e) => setEmail(e.target.value)} />
                                     </div>
                                 </div>
-                                <div className="field mt-5">
+                                <div className="form_input">
                                     <label className="label">Password</label>
-                                    <div className="controls">
-                                        <input type="password" className="input" placeholder="******" value={password} onChange={(e) => setPassword(e.target.value)} />
+                                    <div className="two">
+                                        <input type={!passShow ? "password" : "text"} className="input"  placeholder="******" value={password} onChange={(e) => setPassword(e.target.value)}  />
+                                        <div className='showpass' onClick={()=>setPassShow(!passShow)}>
+                                        {!passShow ? "Show" : "Hide"}
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="field mt-5">

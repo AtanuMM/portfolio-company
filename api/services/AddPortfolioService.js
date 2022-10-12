@@ -6,18 +6,22 @@ const {db : {AddPortfolio ,}}=require("../models")
 const userAdd = async (req, res) => {
     try {
         console.log("OKKKKK")
-        const { category,industry, projectName, Tstack, Llink, Dlink, Ldate, Isapp, psl, asl, desc } = req.body;
+        const { category,industry, projectName, Tstack1, Llink, Dlink,Wdate,Credential,Tstack2, Isapp, psl, psldate, asl, asldate, desc } = req.body;
         let userCreate = await AddPortfolio.create({
             category: category,
             industry: industry,
             projectName: projectName,
-            Tstack: Tstack,
+            Tstack1: Tstack1,
             Llink: Llink,
             Dlink: Dlink,
-            Ldate: Ldate,
+            Wdate: Wdate,
+            Credential: Credential,
+            Tstack2: Tstack2,
             Isapp: Isapp,
             psl: psl,
+            psldate: psldate,
             asl: asl,
+            asldate: asldate,
             desc: desc,
             // isActive:true
         });
@@ -42,6 +46,10 @@ try {
     console.log(err)
   }
 }
+
+
+
+
 
 
 
@@ -90,9 +98,24 @@ const contentGet =  async(req, res)=>{
            console.log(findAll,`line 76`)
            return findAll;
     } catch (error) {
+        console.log(error);
+    }
+}
+
+const showData =  async(req, body)=>{
+    try {
+        let findOne=await AddPortfolio.findOne({
+            where:{
+                id:req.params.id
+            }
+           })
+           console.log(findOne,`line 76`)
+           return findOne;
+    } catch (error) {
         console.log(err);
     }
 }
+
 
 
 
@@ -109,4 +132,4 @@ const contentGet =  async(req, res)=>{
 //         }
 //     }
 
-module.exports = { userAdd,userEdit,userDelete,contentGet }
+module.exports = { userAdd,userEdit,userDelete,contentGet,showData }

@@ -1,6 +1,7 @@
 const {db : {User , }}=require("../models")
 const bcrypt =require ("bcryptjs");
 const jwt =require ("jsonwebtoken");
+const { check,validationResult } = require('express-validator');
 // const { userRegister,userLogin } = require ("../services/sample.service.js")
  
 //  const getUsers = async(req,res) => {
@@ -82,11 +83,15 @@ const getUsers = async(req, res) => {
 }
 
 const Register = async(req, res) => {
-    const { name, email, password, confPassword } = req.body;
+    
+    try {
+        const { name, email, password, confPassword } = req.body;
+    
     if(password !== confPassword) return res.status(400).json({msg: "Password and Confirm Password do not match"});
+        
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
-    try {
+        
         await User.create({
             name: name,
             email: email,

@@ -1,5 +1,5 @@
-const {db : {AddPortfolio , }}=require("../models")
-const { userAdd,userEdit,userDelete,contentGet } = require ("../services/AddPortfolioService.js")
+const {db : {AddPortfolio ,conn }, db}=require("../models")
+const { userAdd,userEdit,userDelete,contentGet, showData } = require ("../services/AddPortfolioService.js")
 
 const getContent = async(req,res) => {
 
@@ -48,6 +48,34 @@ const Update = async(req, res) => {
     }
 }
 
+// const ShowData =async (req, res) => {
+//     try {
+//         console.log(req.params);
+//         const { id } = req.params;
+//         const userindividual = await AddPortfolio.Id({ id: id });
+//         console.log(userindividual);
+//         res.status(201).json(userindividual);
+//     } catch (error) {
+//         res.status(400).json(error);
+//     }
+// }
+
+const ShowData =  async(req, res)=>{
+    try {
+        let userShowDataController = await showData(req,res)
+        //console.log(userLoginController,`line 38`)
+        if(userShowDataController){
+            res.status(200).json({msg: "DAta Successful", code:200, status:true, data:userShowDataController});
+        }else{
+            res.status(400).json({msg: "DAta UnSuccessful", code:400, status:false, data:userShowDataController});
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({msg: "Internal Server Error", code:500, status:false, error:error});
+    }
+}
+
+
 const Delete = async(req, res) => {
     try {
         let userDeleteController = await userDelete(req,res)
@@ -64,4 +92,4 @@ const Delete = async(req, res) => {
     }
 }
 
-module.exports = { Addcontent,Update,Delete,getContent }
+module.exports = { Addcontent,Update,Delete,getContent,ShowData }

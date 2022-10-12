@@ -24,15 +24,20 @@ module.exports = (sequelize, DataTypes) => {
       type: Sequelize.JSON
     },
     projectName: DataTypes.STRING,
-    Tstack:{
+    Tstack1:{
       type: Sequelize.JSON
     },
     Llink: DataTypes.STRING,
     Dlink: DataTypes.STRING,
-    Ldate: DataTypes.STRING,
-    Isapp: DataTypes.BOOLEAN,
+    Wdate: DataTypes.STRING,
+    Credential: DataTypes.STRING,
+    Tstack2:{
+      type: Sequelize.JSON
+    },
     psl: DataTypes.STRING,
-    asl: DataTypes.STRING,    
+    psldate: DataTypes.STRING,
+    asl: DataTypes.STRING,   
+    asldate: DataTypes.STRING,
     desc: DataTypes.STRING,
     isDeleted: DataTypes.BOOLEAN,
     deletedAt:DataTypes.DATE

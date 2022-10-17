@@ -8,6 +8,8 @@ import Navbar from "./components/Navbar";
 import ProjectRegistration from "./components/Add_Data";
 import ViewProjects from "./components/View_Data";
 import EditProject from "./components/EditProject";
+import Details from './components/Details';
+//import './App.css'
 
 
 
@@ -24,6 +26,7 @@ function App() {
     <Route path="/addData" element={<ProjectRegistration/>} />
     <Route path="/edit/:id" element={<EditProject/>} />
     <Route path="/viewData" element={<ViewProjects/>} />
+    <Route path="/view/:id" element={<Details />} />
 
 
    </Routes>

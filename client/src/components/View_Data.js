@@ -7,53 +7,60 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
-import jwt_decode from "jwt-decode"; 
+import jwt_decode from "jwt-decode";
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 
-const CategoryList = ({ list }) => {
 
-  return <>
-    {
-      list
-      &&
-      <ul>
-        {list.map((item,index)=>(
-        <li key={index}>{item}</li>
-        ))}
-      </ul>
-    }
-  </>
-}
+// const CategoryList = ({ list }) => {
+
+//   return <>
+//     {
+//       list
+//       &&
+//       <ul>
+//         {list.map((item,index)=>(
+//         <li key={index}>{item}</li>
+//         ))}
+//       </ul>
+//     }
+//   </>
+// }
 
 
 const ViewProjects = () => {
   const [getuserdata, setUserData] = useState([]);
   const { logindata, setLoginData } = useContext(LoginContext);
-  //console.log(getuserdata);
+  const excludeColumns = ["id", "Llink", "Dlink", "psl", "asl"];
+  console.log(getuserdata, "ln34");
   const history = useNavigate("");
   const [name, setName] = useState('');
-    const [token, setToken] = useState('');
-    const [expire, setExpire] = useState('');
-    const [users, setUsers] = useState([]); 
-    // useEffect(() => {
-    //     refreshToken();
-        
-    // }, []);
+  const [token, setToken] = useState('');
+  const [expire, setExpire] = useState('');
+  const [users, setUsers] = useState([]);
+  const [search, setSearch] = useState("")
+
+
+  // useEffect(() => {
+  //     refreshToken();
+
+  // }, []);
 
   //gateway of token
   const refreshToken = async () => {
     try {
-        const response = await axios.get('http://localhost:5005/token');
-        setToken(response.data.accessToken);
-        const decoded = jwt_decode(response.data.accessToken);
-        setName(decoded.name);
-        setExpire(decoded.exp);
+      const response = await axios.get('http://localhost:5005/token');
+      setToken(response.data.accessToken);
+      const decoded = jwt_decode(response.data.accessToken);
+      setName(decoded.name);
+      setExpire(decoded.exp);
     } catch (error) {
-        if (error.response) {
-            history("/dashboard")
-        }
+      if (error.response) {
+        history("/dashboard")
+      }
     }
-}
+  }
 
   const getdata = async () => {
     const res = await axios("http://localhost:5005/content/get", {
@@ -62,32 +69,16 @@ const ViewProjects = () => {
         "Content-Type": "application/json"
       }
     });
-    
-    console.log(res.data.data)
-    // const data = res.data.data;
-    // console.log(data);
+    console.log(res.data.data, "ln65")
     setUserData(res.data.data)
-    console.log(setUserData,`line 59`);
-    // JSON.stringify
-    // return <div>{JSON.stringify(data)}</div>;
-
-    // if (!data) {
-    //   console.log("error");
-    // } else {
-    //   setUserData(data)
-    //   console.log(setUserData,`line 59`);
-    // }
   }
-
-
-
   useEffect(() => {
     refreshToken();
     getdata();
   }, [])
 
-  const showData = () =>{
-    console.log(getuserdata,`line 82`)
+  const showData = () => {
+    console.log(getuserdata, `line 82`)
   }
   const deleteuser = async (id) => {
 
@@ -110,85 +101,110 @@ const ViewProjects = () => {
 
 
   return (
-    <div>
+    <div className='viewbox'>
 
-      <div className='container'>
+      <div className=''>
         <NavLink to='/dashboard'><button className='btn btn-info mt-5'>Go To Dashbord</button></NavLink>
       </div>
-      <div className='mt-5'>
-        <div className='container'>
+      <div>
+        <h6 className='mt-3 mb-1 mx-4'>Search</h6>
+        <input className='mt-3 mb-4 mx-4' type="text"
+          placeholder=' Type to search'
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
 
-          {/* <section className="main-banner" id="top" data-section="section1">
-            <div className="video-overlay header-text">
-              <div className="caption">
-                <h2><em></em>Project Listing</h2>
-                <div className='add_btn mt-2 mb-2'>
-                  <NavLink to="/register" className='btn btn-warning'>Add User</NavLink>
-                </div>
-              </div>
-            </div>
-          </section> */}
 
-          <table class="table table-bordered">
-            <thead>
-              <tr className=''>
+
+
+
+      <div className=''>
+
+        <div className=''>
+          <table className='table table-bordered '>
+            <thead className=''>
+              <tr className='container'>
                 <th scope="col">Id</th>
                 {/* <th scope="col">Author Name</th> */}
                 <th scope="col">category</th>
                 <th scope="col">Industry</th>
                 <th scope="col">Project Name</th>
-                <th scope="col">Techstack</th>
-                <th scope="col">Live Date</th>
+                <th scope="col">Techstack1</th>
                 <th scope="col">Live link</th>
                 <th scope="col">Demo link</th>
-                {/* <th scope="col">Tstack2</th> */}
+                <th scope="col">Website Live Date</th>
+                <th scope="col">Credential</th>
+                <th scope="col">Tstack2</th>
                 <th scope="col">Play store</th>
-                {/* <th scope="col">Live Date</th> */}
+                <th scope="col">Playstore Live Date</th>
                 <th scope="col">Apple Store</th>
-                {/* <th scope="col">live date</th> */}
+                <th scope="col">Applestore Live Date</th>
                 <th scope="col">Description</th>
-                <th scope="col">Action</th>
-                
+                <th className='thc'>Action</th>
+
 
               </tr>
             </thead>
-            <tbody>
-            {
-                getuserdata ? getuserdata.map((item)=>{
-                   // console.log(item.id,`line 150`)
-                    return (
-                        <tr>
-                        <td>{item.id}</td>
-                        <td>{item.category}</td>
-                        <td>{item.industry}</td>
-                        <td>{item.projectName}</td>
-                        <td>{item.Tstack}</td>
-                        <td>{item.Ldate}</td>
-                        <td>{item.Llink}</td>
-                        <td>{item.Dlink}</td>
-                        <td>{item.psl}</td>
-                        <td>{item.asl}</td>
-                        <td>{item.desc}</td>
-                        {/* <tr>
-                        
-                        <td>{item.category.map((item1)=>{
-                            <ol>item1</ol>
-                        })}</td>
-                        </tr> */}
+            <tbody className='container'>
+              {
+                getuserdata ? getuserdata.filter((val) => {
+                  if (search == "") {
+                    return val
+                  } else if (
+                    val.projectName.toLowerCase().includes(search.toLowerCase())
+                    || val.desc.toLowerCase().includes(search.toLowerCase())
+                    || val.Llink.toLowerCase().includes(search.toLowerCase())
+                    || val.Dlink.toLowerCase().includes(search.toLowerCase())
+                    || val.psl.toLowerCase().includes(search.toLowerCase())
+                    || val.asl.toLowerCase().includes(search.toLowerCase())
+                    || val.category.toString().toLowerCase().includes(search.toLowerCase())
+                    || val.industry.toString().toLowerCase().includes(search.toLowerCase())
+                    || val.Tstack1.toString().toLowerCase().includes(search.toLowerCase())
+                    || val.Tstack2.toString().toLowerCase().includes(search.toLowerCase())
+                    
 
-                        <td className='d-flex justify-content-between'>
-                          <NavLink to={`views/}`}><button className='btn '><VisibilityIcon /> View</button></NavLink>
-                          <NavLink to={`/edit/${item.id}`}><button className='btn '><ModeEditIcon />Edit</button></NavLink>
-                          <button className='btn ' onClick={() => deleteuser(item.id)}><DeleteIcon />Delete</button>
-                        </td>
 
+                    // || val.category.includes(search.toLowerCase())
+                  ) {
+                    return val
+                  }
+                }).map((item) => {
+                  // console.log(item.id,`line 150`)
+                  return (
+                    
+                    <tr>
+                      <td>{item.id}</td>
+                      <td style={{padding:8}}>{item.category}</td>
+                      <td style={{padding:8}}>{item.industry}</td>
+                      <td>{item.projectName}</td>
+                      <td style={{padding:8}}>{item.Tstack1}</td>
+                      <td>{item.Llink}</td>
+                      <td>{item.Dlink}</td>
+                      <td>{item.Wdate}</td>
+                      <td>{item.Credential}</td>
+                      <td style={{padding:8}}>{item.Tstack2}</td>
+                      <td>{item.psl}</td>
+                      <td>{item.psldate}</td>
+                      <td>{item.asl}</td>
+                      <td>{item.asldate}</td>
+                      <td>{item.desc}</td>
+                     
+
+                      <td className=''>
+                        <NavLink to={`/view/${item.id}`}><button className='btn '><VisibilityIcon /> View</button></NavLink>
+                        <NavLink to={`/edit/${item.id}`}><button className='btn '><ModeEditIcon />Edit</button></NavLink>
+                        <button className='btn ' onClick={() => deleteuser(item.id)}><DeleteIcon />Delete</button>
+                      </td>
                     </tr>
-                    )
-                }): <></>
-            }
+                  )
+                }) : <></>
+              }
             </tbody>
           </table>
-
+          {/* <div className="clearboth"></div>
+          {search.length === 0 && <span>No records found to display!</span>}
+ */}
 
         </div>
       </div>

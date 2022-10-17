@@ -77,19 +77,34 @@ const ShowData =  async(req, res)=>{
 
 
 const Delete = async(req, res) => {
+    // try {
+    //     let userDeleteController = await userDelete(req,res)
+    //     console.log(userDeleteController)
+    //     if(userDeleteController){
+    //         res.status(200).json({msg: "Delete Successful", code:200, status:true, data:userDeleteController});
+    //     }
+    //     else {
+    //         res.status(400).json({msg: "Delete UnSuccessful", code:400, status:false, data:userDeleteController});
+    //     }
+    // } catch (error) {
+    //     console.log(error);
+    //     res.status(500).json({msg: "Internal Server Error", code:500, status:false, error:error});
+    // }
+
+
+    //Hard delete
     try {
-        let userDeleteController = await userDelete(req,res)
-        console.log(userDeleteController)
-        if(userDeleteController){
-            res.status(200).json({msg: "Delete Successful", code:200, status:true, data:userDeleteController});
-        }
-        else {
-            res.status(400).json({msg: "Delete UnSuccessful", code:400, status:false, data:userDeleteController});
-        }
+        await AddPortfolio.destroy({
+            where: {
+                id: req.params.id
+            }
+        });
+        res.json({
+            "message": "Deleted"
+        });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({msg: "Internal Server Error", code:500, status:false, error:error});
-    }
+        res.json({ message: error.message });
+    }  
 }
 
 module.exports = { Addcontent,Update,Delete,getContent,ShowData }

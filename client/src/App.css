@@ -2,9 +2,29 @@
   text-align: center;
 }
 
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+.viewbox {
+  justify-content: center;
+  padding: 10px 10px 10px 10px;
+ 
+}
+
+table, th{
+  border: 2px solid;
+  color: #2e1616;
+}
+.thc {
+  padding-left:60px ;
+  
+}
+.inline.btn{
+  display: inline-block;
+  font-size: 20px;
+  padding: 20px;
 }
 
 @media (prefers-reduced-motion: no-preference) {

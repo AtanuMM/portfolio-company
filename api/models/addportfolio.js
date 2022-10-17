@@ -18,21 +18,49 @@ module.exports = (sequelize, DataTypes) => {
   }
   AddPortfolio.init({
     category:{
-      type: Sequelize.JSON
+      type: Sequelize.STRING,
+    allowNull: false,
+    get() {
+        return this.getDataValue('category').split(';')
+    },
+    set(val) {
+       this.setDataValue('category',val.join(';'));
+    },
     },
     industry:{
-      type: Sequelize.JSON
+      type: Sequelize.STRING,
+    allowNull: false,
+    get() {
+        return this.getDataValue('industry').split(';')
+    },
+    set(val) {
+       this.setDataValue('industry',val.join(';'));
+    },
     },
     projectName: DataTypes.STRING,
     Tstack1:{
-      type: Sequelize.JSON
+      type: Sequelize.STRING,
+    allowNull: false,
+    get() {
+        return this.getDataValue('Tstack1').split(';')
+    },
+    set(val) {
+       this.setDataValue('Tstack1',val.join(';'));
+    },
     },
     Llink: DataTypes.STRING,
     Dlink: DataTypes.STRING,
     Wdate: DataTypes.STRING,
     Credential: DataTypes.STRING,
     Tstack2:{
-      type: Sequelize.JSON
+      type: Sequelize.STRING,
+    allowNull: false,
+    get() {
+        return this.getDataValue('Tstack2').split(';')
+    },
+    set(val) {
+       this.setDataValue('Tstack2',val.join(';'));
+    },
     },
     psl: DataTypes.STRING,
     psldate: DataTypes.STRING,

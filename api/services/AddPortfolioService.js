@@ -7,7 +7,7 @@ const userAdd = async (req, res) => {
     try {
         console.log("OKKKKK")
         const { category,industry, projectName, Tstack1, Llink, Dlink,Wdate,Credential,Tstack2, Isapp, psl, psldate, asl, asldate, desc } = req.body;
-        let userCreate = await AddPortfolio.create({
+        const userCreate = await AddPortfolio.create({
             category: category,
             industry: industry,
             projectName: projectName,
@@ -25,8 +25,7 @@ const userAdd = async (req, res) => {
             desc: desc,
             // isActive:true
         });
-        //UserModel.findAll({})
-        return userCreate;
+         return userCreate;
     } catch (error) {
         console.log(error);
         return false;
@@ -47,45 +46,40 @@ try {
   }
 }
 
-
-
-
-
-
-
-const userDelete =  async(req, res)=>{
-    try {
-        let projectId=req.params.id
-        let date= new Date()
-       let findProject= await AddPortfolio.findOne({where:{id:projectId}})
-        if(findProject==null){
-            return false
-        } 
-        else {
-            let projectSoftDel= await AddPortfolio.update(
-                {
-                    isDeleted:true,
-                    deletedAt:date 
-                }, 
-                {
-                where: {
-                    id:projectId
-                }
-              }
-              );
-             
-              return projectSoftDel
+// const userDelete =  async(req, res)=>{
+//     try {
+//         let projectId=req.params.id
+//         let date= new Date()
+//        let findProject= await AddPortfolio.findOne({where:{id:projectId}})
+//     //    console.log(findProject,'54');
+//         if(findProject==null){
+//             return false
+//         } 
+//         else {
+//             console.log("ln59");
+//             let projectSoftDel= await AddPortfolio.update(
+//                 {
+//                     isDeleted:true,
+//                     deletedAt:date  
+//                 }, 
+//                 {
+//                 where: {
+//                     id:projectId
+//                 }
+//               }
+//               );
+//              console.log(projectSoftDel,'70')
+//               return projectSoftDel
               
-        }
-        
-        
-   
+//         }
+//     } 
+//        catch (err) {
+//         console.log(err);;
+//     }
+// }
 
-    } 
-       catch (err) {
-        console.log(err);;
-    }
-}
+
+
 
 const contentGet =  async(req, res)=>{
     try {
@@ -119,17 +113,17 @@ const showData =  async(req, body)=>{
 
 
 
-//     const usraldel =async(req, res)=>{
-//         try {
-//             let projectIdt=req.params.id       
-//        let findProjectt= await AddPortfolio.findOne({where:{id:projectIdt}})
-//        if (findProjectt == true) {
-//         return false
-//        } else {
-//        }
-//         } catch (error) {
-//             throw error
-//         }
-//     }
+    // const userDelete =async(req, res)=>{
+    //     try {
+    //         let projectId=req.params.id       
+    //    let deleteuser= await AddPortfolio.findOne({where:{id:projectId}})
+    //    if (deleteuser == true) {
+    //     return false
+    //    } else {
+    //    }
+    //     } catch (error) {
+    //         throw error
+    //     }
+    // }
 
-module.exports = { userAdd,userEdit,userDelete,contentGet,showData }
+module.exports = { userAdd,userEdit,contentGet,showData }

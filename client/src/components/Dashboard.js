@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate, NavLink } from 'react-router-dom';
 import axios from 'axios';
 import jwt_decode from "jwt-decode"; 
+import {toast} from 'react-toastify';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
@@ -18,6 +19,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
+
 
 
 const drawerWidth = 240;
@@ -118,7 +120,7 @@ const Dashboard = () => {
  
     
     return (
-        <div className="container mt-5">
+        <div className="viewbox mt-5">
 
             <h1>Welcome Back: {name}</h1>
             <nav className="navbar is-light" role="navigation" aria-label="main navigation">

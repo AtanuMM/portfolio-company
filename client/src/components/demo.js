@@ -1,210 +1,428 @@
-import React, { useState, useContext } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import React, { useEffect, useState, useContext } from 'react'
+import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import { Box, TextField, MenuItem } from '@mui/material';
 import { LoginContext } from '../ContextProvider/Context';
-import { useEffect } from 'react';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
-const CategoryList = ({ list }) => {
+function EditProject() {
 
-  return <>
-    {
-      list
-      &&
-      <ul>
-        {list.map((item,index)=>(
-        <li key={index}>{item}</li>
-        ))}
-      </ul>
+    // const [getuserdata, setuserdata] = useState([]);
+    // console.log(getuserdata);
+    const [toggle, setToggle] = useState(false)
+
+    const changeTog = (e) => {
+        e.preventDefault();
+        setToggle(!toggle)
     }
-  </>
-}
 
 
-const ViewProjects = () => {
-  const [getuserdata, setuserdata] = useState([]);
-  const { logindata, setLoginData } = useContext(LoginContext);
-  console.log(getuserdata);
-  const navigate = useNavigate("");
-  const history = useNavigate("");
+    // the auth user gateway
+    const { logindata, setLoginData } = useContext(LoginContext);
+    const PregeditValid = async () => {
+        let token = localStorage.getItem("usersdatatoken");
 
-  //gateway of token
-  const viweValid = async () => {
-    let token = localStorage.getItem("usersdatatoken");
+        const res = await fetch("/validuser", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+            }
+        });
+        const data = await res.json();
 
-    const res = await fetch("/validuser", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": token
-      }
-    });
-    const data = await res.json();
+        if (data.status == 401 || !data) {
+            history("*");
+        } else {
+            console.log("user verify");
+            setLoginData(data);
 
-    if (data.status == 401 || !data) {
-      history("*");
-    } else {
-      console.log("user verify");
-      setLoginData(data);
-
+        }
     }
-  }
 
-  useEffect(() => {
-    setTimeout(() => {
-      viweValid();
+    useEffect(() => {
+        setTimeout(() => {
+            PregeditValid();
+            setData(true)
+        })
 
+    }, [])
+
+
+
+    const history = useNavigate("");
+
+    const { id } = useParams("")
+    console.log(id);
+
+    const [inpVal, setInp] = useState({
+        category: [],
+        industry: [],
+        projectName: '',
+        Tstack1: [],
+        Llink: '',
+        Dlink: '',
+        wld: '',
+        credentials: '',
+        Tstack2: [],
+        psl: '',
+        psd: '',
+        asl: '',
+        asd: '',
+        desc: '',
     })
+    const [ckEditorContent2, setCkEditorContent2] = useState("");
+    const [ckEditorContent, setCkEditorContent] = useState("");
+ 
 
-  }, [])
-
-
-  const getdata = async (e) => {
-    const res = await fetch("/getdata", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-    const data = await res.json();
-    console.log(data);
-
-    if (res.status === 422 || !data) {
-      console.log("error");
-    } else {
-      setuserdata(data)
-      console.log("get data");
+    //multselect comp
+    const [multiple, setmultiple] = useState([]);
+    //  console.log(multiple);
+    const handleChange = (event) => {
+        const value = event.target.value
+        setData(event)
+        setmultiple(typeof value === 'string' ? value.split(',') : value)
     }
-  }
 
-  useEffect(() => {
-    getdata();
-  }, [])
+    const setData = (e, editor) => {
 
-  const deleteuser = async (id) => {
-
-    const resdel = await fetch(`/deleteuser/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-    const delData = await resdel.json();
-    console.log(delData);
-
-    if (resdel.status === 422 || !delData) {
-      console.log("Error");
-    } else {
-      console.log("user deleted");
-      getdata()
+        const { name, value } = e.target;
+        setInp((preval) => ({
+            ...preval,
+            [name]: value
+        }))
     }
-  }
+
+    //for creden
+    const onCKEditorContentChange2 = (event, editor) => {
+        const data3 = editor.getData();
+        setCkEditorContent2(data3);
+    }
+
+    //for desc
+    const onCKEditorContentChange = (event, editor) => {
+        const data = editor.getData();
+        setCkEditorContent(data);
+    }
+    
 
 
-  return (
-    <div>
+   const getdata = async () => {
+        const res = await fetch(`/getuser/${id}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const pdata = await res.json();
+        // console.log(pdata, "line no 118")
+        const credentialData = pdata?.credentials;
+        const descData = pdata?.desc;      
+    //    console.log('line 120=>',credentialData);
+    //     console.log('line 121=>',descData);
 
-      <div className='container'>
-        <NavLink to='/dash'><button className='btn btn-info mt-5'>Go To Dashbord</button></NavLink>
-      </div>
-      <div className='mt-5'>
-        <div className='container'>
+        if (res.status === 422 || !pdata) {
+            console.log("error");
+        } else {
+            setInp(pdata)
+            //console.log(pdata);
+            setCkEditorContent2(credentialData)
+            setCkEditorContent(descData)
+            
+            //console.log("get data 123",credentialData);
+            //console.log("li no 129",descData2);
+        }
+    }
 
-          {/* <section className="main-banner" id="top" data-section="section1">
-            <div className="video-overlay header-text">
-              <div className="caption">
-                <h2><em></em>Project Listing</h2>
-                <div className='add_btn mt-2 mb-2'>
-                  <NavLink to="/register" className='btn btn-warning'>Add User</NavLink>
-                </div>
-              </div>
+    useEffect(() => {
+        getdata();
+    }, [])
+
+    const updateuser = async (e) => {
+        e.preventDefault();
+
+        const { Auther, category, industry, projectName, Tstack1, Llink, Dlink, wld, credentials, Tstack2, psl, psd, asl, asd, desc } = inpVal
+
+
+
+
+        const res2 = await fetch(`/updateuser/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                Auther,
+                category,
+                industry,
+                projectName,
+                Tstack1,
+                Llink,
+                Dlink,
+                wld,
+                credentials: ckEditorContent2,
+                Tstack2,
+                psl,
+                psd,
+                asl,
+                asd,
+                desc: ckEditorContent
+            })
+        });
+        const data2 = res2.json();
+        console.log(data2);
+
+        if (res2.status === 422 || !data2) {
+            alert('fillup the data')
+        } else {
+            alert('Data Updated');
+            history("/viewproj")
+        }
+    }
+    return (
+        <div>
+            <h2 className='mt-3 d-flex justify-content-center'>Wellcome to Edit Page</h2>
+            <div>
+
+                <NavLink to='/dash'><button className='btn btn-info mt-4 mx-4'>go to dash</button></NavLink>
+                 <NavLink to='/viewproj'><button className='btn btn-info mt-5 mx-5'>Go To Project View</button></NavLink> 
+                
             </div>
-          </section> */}
 
-          <table class="table table-bordered">
-            <thead>
-              <tr className='table-dark'>
-                <th scope="col">Id</th>
-                <th scope="col">Author Name</th>
-                <th scope="col">category</th>
-                <th scope="col">Industry</th>
-                <th scope="col">Project Name</th>
-                <th scope="col">Techstack</th>
-                <th scope="col">Live link</th>
+            <div className='container'>
+           
 
-                <th scope="col">Tstack app</th>
-                <th scope="col">Play store</th>
+                <form className='mt-4'>
+                    <div className='row'>
 
-                <th scope="col">Apple Store</th>
+                        {/ Multi Check Box /}
+                        <div className="mb-3 col-lg-6 col-md-6 col-12">
+                            <label for="exampleInputPassword1" className="form-label">Select Category</label>
+                            <Box width='250px'>
+                                <TextField label='Select category'
+                                    select
+                                    value={inpVal.category}
+                                    onChange={setData}
+                                    fullWidth
+                                    SelectProps={{
+                                        multiple: true
+                                    }}
+                                    name='category'
+                                    helperText='please select your categories '
+                                >
+                                    <MenuItem value='Ecommerce website'>Ecommerce website</MenuItem>
+                                    <MenuItem value='Personal blog.'>Personal blog.</MenuItem>
+                                    <MenuItem value='Business website.'>Business website.</MenuItem>
+                                    <MenuItem value='Entertainment or media website.'>Entertainment or media website.</MenuItem>
 
-                <th scope="col">Description</th>
-                <th scope="col">Action</th>
+                                </TextField>
+                            </Box>
+                        </div>
 
 
-              </tr>
-            </thead>
-            <tbody>
+                        
+                        <div className="mb-3 col-lg-6 col-md-6 col-12">
+                            <label for="exampleInputPassword1" className="form-label">Select Industry</label>
+                            <Box width='250px'>
+                                <TextField label='Select Industry'
+                                    select
+                                    value={inpVal.industry}
+                                    onChange={setData}
+                                    fullWidth
+                                    SelectProps={{
+                                        multiple: true
+                                    }}
+                                    name='industry'
+                                    helperText='please select your Industry '
+                                >
+                                    <MenuItem value='IT , '>IT</MenuItem>
+                                    <MenuItem value='Software'>Software </MenuItem>
+                                    <MenuItem value='Freelince'>Freelince </MenuItem>
+                                    <MenuItem value='Graphics'>Graphics </MenuItem>
+                                </TextField>
+                            </Box>
+                        </div>
 
-              {
-                getuserdata.map((element, id) => {
-                  return (
-                    <>
-                      <tr>
-                        <th scope="row">{id + 1}</th>
-                        <td>{element.Auther}</td>
-                        <td style={{width: '500px'}}>
-                          <CategoryList
-                            list={element.category}
-                          />
-                        </td>
-                        <td style={{width: '500px'}}>
-                          <CategoryList
-                          list={element.industry} />
-                        </td>
 
-                        <td>{element.projectName}</td>
+                    </div>
 
-                        <td style={{width: '500px'}}>
-                        <CategoryList
-                          list={element.Tstack1} />
-                          
-                        </td>
+                    
+                    <div className='row'>
+                        <div className="mb-4">
+                            <label for="exampleInputEmail1" className="form-label">Project Name</label>
+                            <input type="text" value={inpVal.projectName} onChange={setData} name='projectName' className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
+                        </div>
+                    </div>
 
-                        <td>{element.Llink}</td>
 
-                        <td>
-                        <CategoryList
-                          list={element.Tstack2} />
-                          
-                          </td>
-                        <td>{element.psl}</td>
 
-                        <td>{element.asl}</td>
 
-                        <td>{element.desc}</td>
-                        <td className='d-flex justify-content-between'>
-                          <NavLink to={`/views/${element._id}`}><button className='btn '><VisibilityIcon /> View</button></NavLink>
-                          <NavLink to={`/edit/${element._id}`}><button className='btn '><ModeEditIcon />Edit</button></NavLink>
-                          <button className='btn ' onClick={() => deleteuser(element._id)}><DeleteIcon />Delete</button>
-                        </td>
-                      </tr>
+                    <div className='row'>
+                    
+                        <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
+                            <label for="exampleInputPassword1" className="form-label">Techstack</label>
+                            <Box width='250px'>
+                                <TextField label='Select Tech Stack'
+                                    select
+                                    value={inpVal.Tstack1}
+                                    onChange={setData}
+                                    fullWidth
+                                    SelectProps={{
+                                        multiple: true
+                                    }}
+                                    name='Tstack1'
+                                    helperText='please select your Tech Stack '
+                                >
+                                    <MenuItem value='MERN '>MERN</MenuItem>
+                                    <MenuItem value='PHP '>PHP</MenuItem>
+                                    <MenuItem value='JAVA '>JAVA</MenuItem>
+                                    <MenuItem value='Dot Net '>Dot Net</MenuItem>
+                                </TextField>
+                            </Box>
 
-                    </>
-                  )
-                })
-              }
-            </tbody>
-          </table>
+                        </div>
+
+                        <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
+                            <label for="exampleInputPassword1" className="form-label">Live link</label>
+                            <input type="text" value={inpVal.Llink} onChange={setData} name='Llink' className="form-control" id="exampleInputPassword1" />
+                        </div>
+                    </div>
+
+
+                    <div className='row'>
+                        <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
+                            <label for="exampleInputPassword1" className="form-label">Demo link</label>
+                            <input type="text" value={inpVal.Dlink} onChange={setData} name='Dlink' className="form-control" id="exampleInputPassword1" />
+                        </div>
+
+                        <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
+                            <label for="exampleInputPassword1" className="form-label">Website Live date</label>
+                            <input type="date" value={inpVal.wld} onChange={setData} name='wld' className="form-control" id="exampleInputPassword1" />
+                        </div>
+
+                    </div>
+
+                    <div className="row">
+                        <div className="mb-3 mb-3 col-lg-12 col-md-12 col-12">
+
+                            <label for="exampleInputPassword1" className="form-label">credentials</label>
+                            <CKEditor
+                                editor={ClassicEditor}
+                                data={ckEditorContent2}
+                                
+                                onReady={editor => {
+
+                                    console.log('Editor is ready to use!', editor);
+                                }}
+                                onChange={onCKEditorContentChange2}
+                                onBlur={(event, editor) => {
+                                    console.log('Blur.', editor);
+                                }}
+                                onFocus={(event, editor) => {
+                                    console.log('Focus.', editor);
+                                }}
+                            />
+                        </div>
+
+                    
+                    </div>
+
+
+
+                    <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
+                        <label for="exampleInputPassword1" className="form-label">Is app</label> <br />
+
+                        <label className="switch">
+                            <input type="checkbox" onClick={changeTog} />
+                            <span className="slider round"></span>
+                        </label>
+
+
+                      
+
+
+                    </div>
+
+                    {
+                        toggle ? <div className='container'>
+
+
+                            <div className='row'>
+                                <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
+                                    <label for="exampleInputPassword1" className="form-label">Techstack</label>
+                                    <Box width='250px'>
+                                        <TextField label='Select Tech Stack'
+                                            select
+                                            value={inpVal.Tstack2}
+                                            onChange={setData}
+                                            fullWidth
+                                            SelectProps={{
+                                                multiple: true
+                                            }}
+                                            name='Tstack2'
+                                            helperText='please select your Tech Stack '
+                                        >
+                                            <MenuItem value='React Native'>React Native</MenuItem>
+                                            <MenuItem value='Android'>Android</MenuItem>
+                                            <MenuItem value='IOS'>IOS</MenuItem>
+                                            <MenuItem value='Flutter'>Flutter</MenuItem>
+
+                                        </TextField>
+                                    </Box>
+
+                                </div>
+
+                            </div>
+
+                            <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
+                                <label for="exampleInputPassword1" className="form-label">Play Store Link</label>
+                                <input type="text" value={inpVal.psl} onChange={setData} name='psl' className="form-control" id="exampleInputPassword1" />
+                            </div>
+                            <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
+                                <label for="exampleInputPassword1" className="form-label">Play Store Live date</label>
+                                <input type="date" value={inpVal.psd} onChange={setData} name='psd' className="form-control" id="exampleInputPassword1" />
+                            </div>
+                            <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
+                                <label for="exampleInputPassword1" className="form-label">Apple Store Link</label>
+                                <input type="text" value={inpVal.asl} onChange={setData} name='asl' className="form-control" id="exampleInputPassword1" />
+                            </div>
+                            <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
+                                <label for="exampleInputPassword1" className="form-label">Apple Store Live date</label>
+                                <input type="date" value={inpVal.asd} onChange={setData} name='asd' className="form-control" id="exampleInputPassword1" />
+                            </div>
+                        </div> : null
+                    }
+
+                    <div className="mb-3 mb-3 col-lg-12 col-md-12 col-12">
+
+                        <label for="exampleInputPassword1" className="form-label">Description</label>
+
+                         <textarea name='desc' value={inpVal.desc} onChange={setData} className='form-control' id='' cols='30' rows='5'></textarea> 
+                        <CKEditor
+                            editor={ClassicEditor}
+                            data={ckEditorContent}
+                            onReady={editor => {
+                                // You can store the "editor" and use when it is needed.
+                                console.log('Editor is ready to use!', editor);
+                            }}
+                            onChange={onCKEditorContentChange}
+                            onBlur={(event, editor) => {
+                                console.log('Blur.', editor);
+                            }}
+                            onFocus={(event, editor) => {
+                                console.log('Focus.', editor);
+                            }}
+                        />
+                    </div>
+
+                    <button type="submit" onClick={updateuser} className="btnz btn-primary mb-5 mt-5">Submit</button>
+
+                </form>
+            </div>
 
 
         </div>
-      </div>
-
-
-    </div>
-  )
+    )
 }
 
-export default ViewProjects
+export default EditProject

@@ -10,12 +10,13 @@
 .viewbox {
   justify-content: center;
   padding: 10px 10px 10px 10px;
+
  
 }
 
 table, th{
   border: 2px solid;
-  color: #2e1616;
+  color: #1d1a1a;
 }
 .thc {
   padding-left:60px ;
@@ -25,7 +26,21 @@ table, th{
   display: inline-block;
   font-size: 20px;
   padding: 20px;
+  
 }
+.btn3{
+  color:rgb(238, 0, 20);
+}
+
+.btn1{
+  color:rgb(0, 255, 221);
+}
+
+.btn2{
+  color:rgb(0, 140, 255);
+}
+
+
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {

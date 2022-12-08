@@ -300,29 +300,7 @@ function EditProject() {
                         <textarea name='Credential' value={inpVal.Credential} onChange={setData} className='form-control' id='' cols='30' rows='5'></textarea>
                     </div> */}
 
-                    <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
-                        <label for="exampleInputPassword1" className="form-label">Tstack2</label>
-                        <Box width='250px'>
-                            <TextField label='Select Tech Stack'
-                                select
-                                value={inpVal.Tstack2}
-                                onChange={setData}
-                                fullWidth
-                                SelectProps={{
-                                    multiple: true
-                                }}
-                                name='Tstack2'
-                                helperText='please select your Tech Stack '
-                            >
-                                <MenuItem value='Tech Stack 1, '>Tech Stack</MenuItem>
-                                <MenuItem value='Tech Stack 2, '>Tech Stack 2</MenuItem>
-                                <MenuItem value='Tech Stack 3, '>Tech Stack 3</MenuItem>
-                                <MenuItem value='Tech Stack 4, '>Tech Stack 4</MenuItem>
-
-                            </TextField>
-                        </Box>
-
-                    </div>
+                   
 
 
 
@@ -349,7 +327,29 @@ function EditProject() {
                             <div className='row'>
 
                             </div>
+                            <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
+                        <label for="exampleInputPassword1" className="form-label">Tstack App</label>
+                        <Box width='250px'>
+                            <TextField label='Select Tech Stack'
+                                select
+                                value={inpVal.Tstack2}
+                                onChange={setData}
+                                fullWidth
+                                SelectProps={{
+                                    multiple: true
+                                }}
+                                name='Tstack2'
+                                helperText='please select your Tech Stack '
+                            >
+                                <MenuItem value='Tech Stack 1, '>Tech Stack</MenuItem>
+                                <MenuItem value='Tech Stack 2, '>Tech Stack 2</MenuItem>
+                                <MenuItem value='Tech Stack 3, '>Tech Stack 3</MenuItem>
+                                <MenuItem value='Tech Stack 4, '>Tech Stack 4</MenuItem>
 
+                            </TextField>
+                        </Box>
+
+                    </div>
                             <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
                                 <label for="exampleInputPassword1" className="form-label">Play Store</label>
                                 <input type="text" value={inpVal.psl} onChange={setData} name='psl' className="form-control" id="exampleInputPassword1" />

@@ -9,7 +9,7 @@ import ProjectRegistration from "./components/Add_Data";
 import ViewProjects from "./components/View_Data";
 import EditProject from "./components/EditProject";
 import Details from './components/Details';
-//import './App.css'
+import './App.css'
 
 
 

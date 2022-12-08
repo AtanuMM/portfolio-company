@@ -19,6 +19,7 @@ const Login = () => {
             navigate("/dashboard");
 
         } catch (error) {
+            console.log(error,"line22");
             if (error.response) {
                 setMsg(error.response.data.msg);
             }

@@ -15,19 +15,12 @@ const Register = () =>{
         e.preventDefault();
 
         try {
-            await axios.post('http://localhost:5005/users/add',{
-                name: name,
-                email:email,
-                password : password,
-                confPassword: confPassword
-                
-            });
             if(name === ''){
                 alert('name is require')
             }else if(email === ''){
                 alert('email is require')
             }else if (!email.includes("@")) {
-                alert('includes @ in your email!')
+                alert('please enter valid email!')
             } else if (password === ""){
                 alert('please fill password')
             }else if (password.length < 6) {
@@ -36,10 +29,14 @@ const Register = () =>{
                 alert('Confirm Password is require')
             }else if (password !== confPassword) {
                 alert('password and confirmpassword not match')
-            }
-
-            else{
-               
+            }else{
+                await axios.post('http://localhost:5005/users/add',{
+                    name: name,
+                    email:email,
+                    password : password,
+                    confPassword: confPassword
+                    
+                });
                 navigate("/login");
             }
             

@@ -1,428 +1,307 @@
-import React, { useEffect, useState, useContext } from 'react'
-import { NavLink, useNavigate, useParams } from 'react-router-dom'
+import React, { useState, useContext } from 'react'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { Box, TextField, MenuItem } from '@mui/material';
-import { LoginContext } from '../ContextProvider/Context';
+import { LoginContext } from '../components/Context';
+import { useEffect } from 'react';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import axios from 'axios';
+import jwt_decode from "jwt-decode";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { ReactHtmlParser } from 'react-html-parser'
+import SearchIcon from '@mui/icons-material/Search';
 
-function EditProject() {
 
-    // const [getuserdata, setuserdata] = useState([]);
-    // console.log(getuserdata);
-    const [toggle, setToggle] = useState(false)
+const ViewProjects = () => {
+  const [getuserdata, setUserData] = useState([]);
+  const { logindata, setLoginData } = useContext(LoginContext);
+  const excludeColumns = ["id", "Llink", "Dlink", "psl", "asl"];
+  console.log(getuserdata, "ln34");
+  const history = useNavigate("");
+  const [name, setName] = useState('');
+  const [token, setToken] = useState('');
+  const [expire, setExpire] = useState('');
+  const [users, setUsers] = useState([]);
+  const [search, setSearch] = useState("");
+  const [searchh, setSearchh] = useState("");
+  const [searchhh, setSearchhh] = useState("");
 
-    const changeTog = (e) => {
-        e.preventDefault();
-        setToggle(!toggle)
+
+
+
+  // useEffect(() => {
+  //     refreshToken();
+
+  // }, []);
+
+  //gateway of token
+  const refreshToken = async () => {
+    try {
+      const response = await axios.get('http://localhost:5005/token');
+      setToken(response.data.accessToken);
+      const decoded = jwt_decode(response.data.accessToken);
+      setName(decoded.name);
+      setExpire(decoded.exp);
+    } catch (error) {
+      if (error.response) {
+        history("/dashboard")
+      }
     }
+  }
 
+  const getdata = async () => {
+    const res = await axios("http://localhost:5005/content/get", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    console.log(res.data.data, "ln65")
+    setUserData(res.data.data)
+  }
+  useEffect(() => {
+    refreshToken();
+    getdata();
+  }, [])
 
-    // the auth user gateway
-    const { logindata, setLoginData } = useContext(LoginContext);
-    const PregeditValid = async () => {
-        let token = localStorage.getItem("usersdatatoken");
+  const showData = () => {
+    console.log(getuserdata, `line 82`)
+  }
+  const deleteuser = async (id) => {
 
-        const res = await fetch("/validuser", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": token
-            }
-        });
-        const data = await res.json();
+    const resdel = await fetch(`http://localhost:5005/content/delete/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    const delData = await resdel.json();
+    console.log(delData);
 
-        if (data.status == 401 || !data) {
-            history("*");
-        } else {
-            console.log("user verify");
-            setLoginData(data);
-
-        }
+    if (resdel.status === 400 || !delData) {
+      console.log("Error");
+    } else {
+      console.log("user deleted");
+      getdata()
     }
-
-    useEffect(() => {
-        setTimeout(() => {
-            PregeditValid();
-            setData(true)
-        })
-
-    }, [])
-
-
-
-    const history = useNavigate("");
-
-    const { id } = useParams("")
-    console.log(id);
-
-    const [inpVal, setInp] = useState({
-        category: [],
-        industry: [],
-        projectName: '',
-        Tstack1: [],
-        Llink: '',
-        Dlink: '',
-        wld: '',
-        credentials: '',
-        Tstack2: [],
-        psl: '',
-        psd: '',
-        asl: '',
-        asd: '',
-        desc: '',
-    })
-    const [ckEditorContent2, setCkEditorContent2] = useState("");
-    const [ckEditorContent, setCkEditorContent] = useState("");
- 
-
-    //multselect comp
-    const [multiple, setmultiple] = useState([]);
-    //  console.log(multiple);
-    const handleChange = (event) => {
-        const value = event.target.value
-        setData(event)
-        setmultiple(typeof value === 'string' ? value.split(',') : value)
-    }
-
-    const setData = (e, editor) => {
-
-        const { name, value } = e.target;
-        setInp((preval) => ({
-            ...preval,
-            [name]: value
-        }))
-    }
-
-    //for creden
-    const onCKEditorContentChange2 = (event, editor) => {
-        const data3 = editor.getData();
-        setCkEditorContent2(data3);
-    }
-
-    //for desc
-    const onCKEditorContentChange = (event, editor) => {
-        const data = editor.getData();
-        setCkEditorContent(data);
-    }
-    
-
-
-   const getdata = async () => {
-        const res = await fetch(`/getuser/${id}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-        const pdata = await res.json();
-        // console.log(pdata, "line no 118")
-        const credentialData = pdata?.credentials;
-        const descData = pdata?.desc;      
-    //    console.log('line 120=>',credentialData);
-    //     console.log('line 121=>',descData);
-
-        if (res.status === 422 || !pdata) {
-            console.log("error");
-        } else {
-            setInp(pdata)
-            //console.log(pdata);
-            setCkEditorContent2(credentialData)
-            setCkEditorContent(descData)
-            
-            //console.log("get data 123",credentialData);
-            //console.log("li no 129",descData2);
-        }
-    }
-
-    useEffect(() => {
-        getdata();
-    }, [])
-
-    const updateuser = async (e) => {
-        e.preventDefault();
-
-        const { Auther, category, industry, projectName, Tstack1, Llink, Dlink, wld, credentials, Tstack2, psl, psd, asl, asd, desc } = inpVal
-
-
-
-
-        const res2 = await fetch(`/updateuser/${id}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                Auther,
-                category,
-                industry,
-                projectName,
-                Tstack1,
-                Llink,
-                Dlink,
-                wld,
-                credentials: ckEditorContent2,
-                Tstack2,
-                psl,
-                psd,
-                asl,
-                asd,
-                desc: ckEditorContent
-            })
-        });
-        const data2 = res2.json();
-        console.log(data2);
-
-        if (res2.status === 422 || !data2) {
-            alert('fillup the data')
-        } else {
-            alert('Data Updated');
-            history("/viewproj")
-        }
-    }
-    return (
-        <div>
-            <h2 className='mt-3 d-flex justify-content-center'>Wellcome to Edit Page</h2>
-            <div>
-
-                <NavLink to='/dash'><button className='btn btn-info mt-4 mx-4'>go to dash</button></NavLink>
-                 <NavLink to='/viewproj'><button className='btn btn-info mt-5 mx-5'>Go To Project View</button></NavLink> 
-                
-            </div>
-
-            <div className='container'>
-           
-
-                <form className='mt-4'>
-                    <div className='row'>
-
-                        {/ Multi Check Box /}
-                        <div className="mb-3 col-lg-6 col-md-6 col-12">
-                            <label for="exampleInputPassword1" className="form-label">Select Category</label>
-                            <Box width='250px'>
-                                <TextField label='Select category'
-                                    select
-                                    value={inpVal.category}
-                                    onChange={setData}
-                                    fullWidth
-                                    SelectProps={{
-                                        multiple: true
-                                    }}
-                                    name='category'
-                                    helperText='please select your categories '
-                                >
-                                    <MenuItem value='Ecommerce website'>Ecommerce website</MenuItem>
-                                    <MenuItem value='Personal blog.'>Personal blog.</MenuItem>
-                                    <MenuItem value='Business website.'>Business website.</MenuItem>
-                                    <MenuItem value='Entertainment or media website.'>Entertainment or media website.</MenuItem>
-
-                                </TextField>
-                            </Box>
-                        </div>
-
-
-                        
-                        <div className="mb-3 col-lg-6 col-md-6 col-12">
-                            <label for="exampleInputPassword1" className="form-label">Select Industry</label>
-                            <Box width='250px'>
-                                <TextField label='Select Industry'
-                                    select
-                                    value={inpVal.industry}
-                                    onChange={setData}
-                                    fullWidth
-                                    SelectProps={{
-                                        multiple: true
-                                    }}
-                                    name='industry'
-                                    helperText='please select your Industry '
-                                >
-                                    <MenuItem value='IT , '>IT</MenuItem>
-                                    <MenuItem value='Software'>Software </MenuItem>
-                                    <MenuItem value='Freelince'>Freelince </MenuItem>
-                                    <MenuItem value='Graphics'>Graphics </MenuItem>
-                                </TextField>
-                            </Box>
-                        </div>
-
-
-                    </div>
-
-                    
-                    <div className='row'>
-                        <div className="mb-4">
-                            <label for="exampleInputEmail1" className="form-label">Project Name</label>
-                            <input type="text" value={inpVal.projectName} onChange={setData} name='projectName' className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                        </div>
-                    </div>
-
-
-
-
-                    <div className='row'>
-                    
-                        <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
-                            <label for="exampleInputPassword1" className="form-label">Techstack</label>
-                            <Box width='250px'>
-                                <TextField label='Select Tech Stack'
-                                    select
-                                    value={inpVal.Tstack1}
-                                    onChange={setData}
-                                    fullWidth
-                                    SelectProps={{
-                                        multiple: true
-                                    }}
-                                    name='Tstack1'
-                                    helperText='please select your Tech Stack '
-                                >
-                                    <MenuItem value='MERN '>MERN</MenuItem>
-                                    <MenuItem value='PHP '>PHP</MenuItem>
-                                    <MenuItem value='JAVA '>JAVA</MenuItem>
-                                    <MenuItem value='Dot Net '>Dot Net</MenuItem>
-                                </TextField>
-                            </Box>
-
-                        </div>
-
-                        <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
-                            <label for="exampleInputPassword1" className="form-label">Live link</label>
-                            <input type="text" value={inpVal.Llink} onChange={setData} name='Llink' className="form-control" id="exampleInputPassword1" />
-                        </div>
-                    </div>
-
-
-                    <div className='row'>
-                        <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
-                            <label for="exampleInputPassword1" className="form-label">Demo link</label>
-                            <input type="text" value={inpVal.Dlink} onChange={setData} name='Dlink' className="form-control" id="exampleInputPassword1" />
-                        </div>
-
-                        <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
-                            <label for="exampleInputPassword1" className="form-label">Website Live date</label>
-                            <input type="date" value={inpVal.wld} onChange={setData} name='wld' className="form-control" id="exampleInputPassword1" />
-                        </div>
-
-                    </div>
-
-                    <div className="row">
-                        <div className="mb-3 mb-3 col-lg-12 col-md-12 col-12">
-
-                            <label for="exampleInputPassword1" className="form-label">credentials</label>
-                            <CKEditor
-                                editor={ClassicEditor}
-                                data={ckEditorContent2}
-                                
-                                onReady={editor => {
-
-                                    console.log('Editor is ready to use!', editor);
-                                }}
-                                onChange={onCKEditorContentChange2}
-                                onBlur={(event, editor) => {
-                                    console.log('Blur.', editor);
-                                }}
-                                onFocus={(event, editor) => {
-                                    console.log('Focus.', editor);
-                                }}
-                            />
-                        </div>
-
-                    
-                    </div>
-
-
-
-                    <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
-                        <label for="exampleInputPassword1" className="form-label">Is app</label> <br />
-
-                        <label className="switch">
-                            <input type="checkbox" onClick={changeTog} />
-                            <span className="slider round"></span>
-                        </label>
-
-
-                      
-
-
-                    </div>
-
-                    {
-                        toggle ? <div className='container'>
-
-
-                            <div className='row'>
-                                <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
-                                    <label for="exampleInputPassword1" className="form-label">Techstack</label>
-                                    <Box width='250px'>
-                                        <TextField label='Select Tech Stack'
-                                            select
-                                            value={inpVal.Tstack2}
-                                            onChange={setData}
-                                            fullWidth
-                                            SelectProps={{
-                                                multiple: true
-                                            }}
-                                            name='Tstack2'
-                                            helperText='please select your Tech Stack '
-                                        >
-                                            <MenuItem value='React Native'>React Native</MenuItem>
-                                            <MenuItem value='Android'>Android</MenuItem>
-                                            <MenuItem value='IOS'>IOS</MenuItem>
-                                            <MenuItem value='Flutter'>Flutter</MenuItem>
-
-                                        </TextField>
-                                    </Box>
-
-                                </div>
-
-                            </div>
-
-                            <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
-                                <label for="exampleInputPassword1" className="form-label">Play Store Link</label>
-                                <input type="text" value={inpVal.psl} onChange={setData} name='psl' className="form-control" id="exampleInputPassword1" />
-                            </div>
-                            <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
-                                <label for="exampleInputPassword1" className="form-label">Play Store Live date</label>
-                                <input type="date" value={inpVal.psd} onChange={setData} name='psd' className="form-control" id="exampleInputPassword1" />
-                            </div>
-                            <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
-                                <label for="exampleInputPassword1" className="form-label">Apple Store Link</label>
-                                <input type="text" value={inpVal.asl} onChange={setData} name='asl' className="form-control" id="exampleInputPassword1" />
-                            </div>
-                            <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
-                                <label for="exampleInputPassword1" className="form-label">Apple Store Live date</label>
-                                <input type="date" value={inpVal.asd} onChange={setData} name='asd' className="form-control" id="exampleInputPassword1" />
-                            </div>
-                        </div> : null
-                    }
-
-                    <div className="mb-3 mb-3 col-lg-12 col-md-12 col-12">
-
-                        <label for="exampleInputPassword1" className="form-label">Description</label>
-
-                         <textarea name='desc' value={inpVal.desc} onChange={setData} className='form-control' id='' cols='30' rows='5'></textarea> 
-                        <CKEditor
-                            editor={ClassicEditor}
-                            data={ckEditorContent}
-                            onReady={editor => {
-                                // You can store the "editor" and use when it is needed.
-                                console.log('Editor is ready to use!', editor);
-                            }}
-                            onChange={onCKEditorContentChange}
-                            onBlur={(event, editor) => {
-                                console.log('Blur.', editor);
-                            }}
-                            onFocus={(event, editor) => {
-                                console.log('Focus.', editor);
-                            }}
-                        />
-                    </div>
-
-                    <button type="submit" onClick={updateuser} className="btnz btn-primary mb-5 mt-5">Submit</button>
-
-                </form>
-            </div>
-
+  }
+
+  // const searchHandle = async(event) =>{
+  //   console.log(event.target.value);
+  //   let key = event.target.value;
+  //   let result = await fetch(`http://localhost:5005/search/${key}`);
+  //   result = await result.json();
+  //   if(result){
+  //     setUserData(result)
+  //   }
+  // }
+
+  // const filterProduct = e => {
+  //   const find = e.target.value.toLowerCase()
+  //   const filteredProduct = namesFromDatabase.filter(Catagory => search.category.toLowerCase().includes(find))
+  //   setSearch(filterProduct)
+  // }
+
+  const handleSearch = () => {
+    //alert('clicked')
+    const newData =
+      getuserdata.filter(x => x.category.toString().toLowerCase().includes(search.toLowerCase()))
+    setUserData(newData)
+
+  }
+  const handleSearchh = () => {
+    //alert('clicked')
+    const newData =
+      getuserdata.filter(x => x.Tstack1.toString().toLowerCase().includes(searchh.toLowerCase()))
+    setUserData(newData)
+
+  }
+  const handleSearchhh = () => {
+    //alert('clicked')
+    const newData =
+      getuserdata.filter(x => x.Tstack2.toString().toLowerCase().includes(searchhh.toLowerCase()))
+    setUserData(newData)
+
+  }
+  
+
+
+  return (
+    <div className='viewbox'>
+
+      <div className=''>
+        <NavLink to='/dashboard'><button className='btn btn-info mt-5'>Go To Dashbord</button></NavLink>
+      </div>
+      <div className='d-flex'>
+        <div className='d-flex'>
+          {/* <input className='d-flex' type="text"
+            placeholder=' Type to search'
+            onChange={(e) => setSearch(e.target.value)}
+          /> */}
+          <td className='mt-1'>
+            <select onChange={(e) => setSearch(e.target.value)}>
+              <option value='Deafult'>Deafult Category</option>
+              <option value='Category 1'>Category 1</option>
+              <option value='Category 2'>Category 2</option>
+              <option value='Category 3'>Category 3</option>
+              <option value='Category 4'>Category 4</option>
+            </select>
+          </td>
+          <div className='justify-content searchIcon'>
+            {/* <button type="submit"><SearchIcon/></button> */}
+            <button onClick={() => handleSearch()}><SearchIcon /></button>
+          </div>
+        </div>
+        <div className='d-flex'>
+          {/* <input className='d-flex' type="text"
+            placeholder=' Type to search'
+            onChange={(e) => setSearch(e.target.value)}
+          /> */}
+          <td className='mt-1'>
+            <select onChange={(e) => setSearchh(e.target.value)}>
+              <option value='Deafult'>Deafult Techstack Web</option>
+              <option value='Tech Stack 1'>Tech Stack 1</option>
+              <option value='Tech Stack 2'>Tech Stack 2</option>
+              <option value='Tech Stack 3'>Tech Stack 3</option>
+              <option value='Tech Stack 4'>Tech Stack 4</option>
+             
+            </select>
+          </td>
+          <div className='justify-content searchIcon'>
+            {/* <button type="submit"><SearchIcon/></button> */}
+            <button onClick={() => handleSearchh()}><SearchIcon /></button>
+          </div>
+        </div>
+        <div className='d-flex'>
+          {/* <input className='d-flex' type="text"
+            placeholder=' Type to search'
+            onChange={(e) => setSearch(e.target.value)}
+          /> */}
+          <td className='mt-1'>
+            <select onChange={(e) => setSearchhh(e.target.value)}>
+              <option value='Deafult'>Deafult Techstack APP</option>
+              <option value='Tech Stack 1'>Tech Stack 1</option>
+              <option value='Tech Stack 2'>Tech Stack 2</option>
+              <option value='Tech Stack 3'>Tech Stack 3</option>
+              <option value='Tech Stack 4'>Tech Stack 4</option>
+              
+            </select>
+          </td>
+          <div className='justify-content searchIcon'>
+            {/* <button type="submit"><SearchIcon/></button> */}
+            <button onClick={() => handleSearchhh()}><SearchIcon /></button>
+          </div>
+        </div>
+        
+      </div>
+
+
+      {/* <div>
+        <input type="search" name="category" placeholder='search category'
+        onChange={searchHandle}
+        />
+        <input type="search" name="Tstack1" placeholder='search Tstack1'/>
+        <input type="search" name="Tstack2" placeholder='search Tstack2'/>
+        <input type="submit" value="Search"/>
+      </div> */}
+
+
+      <div className=''>
+
+        <div className=''>
+          <table className='table table-bordered '>
+            <thead className=''>
+              <tr className='container'>
+                <th scope="col">Id</th>
+                <th scope="col">category</th>
+                <th scope="col">Industry</th>
+                <th scope="col">Project Name</th>
+                <th scope="col">Techstack1</th>
+                <th scope="col">Live link</th>
+                <th scope="col">Demo link</th>
+                <th scope="col">Website Live Date</th>
+                <th scope="col">Credential</th>
+                <th scope="col">Tstack App</th>
+                <th scope="col">Play store</th>
+                <th scope="col">Playstore Live Date</th>
+                <th scope="col">Apple Store</th>
+                <th scope="col">Applestore Live Date</th>
+                <th scope="col">Description</th>
+                <th style={{ paddingLeft: 70 }} >Action</th>
+
+
+              </tr>
+            </thead>
+            <tbody className='container'>
+              {
+                getuserdata ? getuserdata
+                  // .filter((val) => {
+                  //   if (search == "") {
+                  //     return val
+                  //   } else if (
+                  //     val.projectName.toLowerCase().includes(search.toLowerCase())
+                  //     || val.desc.toLowerCase().includes(search.toLowerCase())
+                  //     || val.Llink.toLowerCase().includes(search.toLowerCase())
+                  //     || val.Dlink.toLowerCase().includes(search.toLowerCase())
+                  //     || val.psl.toLowerCase().includes(search.toLowerCase())
+                  //     || val.asl.toLowerCase().includes(search.toLowerCase())
+                  //     || val.category.toString().toLowerCase().includes(search.toLowerCase())
+                  //     || val.industry.toString().toLowerCase().includes(search.toLowerCase())
+                  //     || val.Tstack1.toString().toLowerCase().includes(search.toLowerCase())
+                  //     || val.Tstack2.toString().toLowerCase().includes(search.toLowerCase())
+
+
+
+                  //     // || val.category.includes(search.toLowerCase())
+                  //   ) {
+                  //     return val
+                  //   }
+                  // })
+                  .map((item) => {
+                    // console.log(item.id,`line 150`)
+                    return (
+
+                      <tr>
+                        <td>{item.id}</td>
+                        <td style={{ padding: 8 }}>{item.category}</td>
+                        <td style={{ padding: 8 }}>{item.industry}</td>
+                        <td style={{ padding: 8 }}>{item.projectName}</td>
+                        <td style={{ padding: 8 }}>{item.Tstack1}</td>
+                        <td style={{ padding: 8 }}>{item.Llink}</td>
+                        <td style={{ padding: 8 }}>{item.Dlink}</td>
+                        <td style={{ padding: 8 }}>{item.Wdate}</td>
+                        <td dangerouslySetInnerHTML={{ __html: item.Credential }}></td>
+                        <td style={{ padding: 8 }}>{item.Tstack2}</td>
+                        <td style={{ padding: 8 }}>{item.psl}</td>
+                        <td style={{ padding: 8 }}>{item.psldate}</td>
+                        <td style={{ padding: 8 }}>{item.asl}</td>
+                        <td style={{ padding: 8 }}>{item.asldate}</td>
+                        <td dangerouslySetInnerHTML={{ __html: item.desc }}></td>
+
+
+                        <td className='d-flex border border-white'>
+                          <NavLink to={`/view/${item.id}`}><button className='btn btn1 '><VisibilityIcon /> View</button></NavLink>
+                          <NavLink to={`/edit/${item.id}`}><button className='btn btn2 '><ModeEditIcon />Edit</button></NavLink>
+                          <button className='btn btn3 ' onClick={() => deleteuser(item.id)}><DeleteIcon />Delete</button>
+                        </td>
+                      </tr>
+                    )
+                  }) : <></>
+              }
+            </tbody>
+          </table>
+          {/* <div className="clearboth"></div>
+          {search.length === 0 && <span>No records found to display!</span>}
+ */}
 
         </div>
-    )
+      </div>
+
+
+    </div>
+  )
 }
 
-export default EditProject
+export default ViewProjects

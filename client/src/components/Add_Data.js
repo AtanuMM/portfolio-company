@@ -8,7 +8,9 @@ import axios from 'axios';
 import jwt_decode from "jwt-decode";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
- import parse from "html-react-parser";
+import parse from 'react-html-parser';
+
+
 // import { text } from 'express';
 
 
@@ -111,7 +113,7 @@ export default function ProjectRegistration() {
 
     const addinpdata = async (e) => {
         e.preventDefault();
-        const { category, industry, projectName, Tstack1, Llink, Dlink, Wdate, Tstack2, Isapp, psl, psldate, asl, asldate, desc } = inpVal
+        const { category, industry, projectName, Tstack1, Llink, Dlink, Wdate, Tstack2, Isapp, psl, psldate, asl, asldate } = inpVal
 
         const res = await fetch("http://localhost:5005/content/add", {
             method: "POST",
@@ -160,10 +162,10 @@ export default function ProjectRegistration() {
                                     name='category'
                                     helperText='please select your categories '
                                 >
-                                    <MenuItem value='Category 1, '>Category 1</MenuItem>
-                                    <MenuItem value='Category 2, '>Category 2</MenuItem>
-                                    <MenuItem value='Category 3, '>Category 3</MenuItem>
-                                    <MenuItem value='Category 4, '>Category 4</MenuItem>
+                                    <MenuItem value='Ecomers, '>Ecomers</MenuItem>
+                                    <MenuItem value='Cms, '>Cms</MenuItem>
+                                    <MenuItem value='Blog, '>Blog</MenuItem>
+                                    <MenuItem value='Booking, '>Booking</MenuItem>
 
                                 </TextField>
                             </Box>
@@ -256,12 +258,12 @@ export default function ProjectRegistration() {
 
                     <div className="row">
                         <div className="mb-3 mb-3 col-lg-12 col-md-12 col-12">
-
+                            
                             <label for="exampleInputPassword1" className="form-label">credential</label>
                             <CKEditor
                                 editor={ClassicEditor}
                                 data={ckEditorContent}
-                                dangerouslySetInnerHTML
+                                dangerouslySetInnerHTM
                                 onReady={editor => {
 
                                     console.log('Editor is ready to use!', editor);
@@ -273,11 +275,18 @@ export default function ProjectRegistration() {
                                 onFocus={(event, editor) => {
                                     console.log('Focus.', editor);
                                 }}
+                                
                             />
+                           
+
+                            
                         </div>
+                        
                         {/* <div>
                             <p>{parse(ckEditorContent)}</p>
-                        </div> */}
+                        </div>  */}
+                      
+                       
                     </div>
 
 
@@ -289,29 +298,7 @@ export default function ProjectRegistration() {
 
 
 
-                    <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
-                        <label for="exampleInputPassword1" className="form-label">Tstack2</label>
-                        <Box width='250px'>
-                            <TextField label='Select Tech Stack'
-                                select
-                                value={inpVal.Tstack2}
-                                onChange={setData}
-                                fullWidth
-                                SelectProps={{
-                                    multiple: true
-                                }}
-                                name='Tstack2'
-                                helperText='please select your Tech Stack '
-                            >
-                                <MenuItem value='Tech Stack 1, '>Tech Stack</MenuItem>
-                                <MenuItem value='Tech Stack 2, '>Tech Stack 2</MenuItem>
-                                <MenuItem value='Tech Stack 3, '>Tech Stack 3</MenuItem>
-                                <MenuItem value='Tech Stack 4, '>Tech Stack 4</MenuItem>
-
-                            </TextField>
-                        </Box>
-
-                    </div>
+                   
 
 
 
@@ -338,6 +325,29 @@ export default function ProjectRegistration() {
                             <div className='row'>
 
                             </div>
+                            <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
+                        <label for="exampleInputPassword1" className="form-label">Tstack App</label>
+                        <Box width='250px'>
+                            <TextField label='Select Tech Stack'
+                                select
+                                value={inpVal.Tstack2}
+                                onChange={setData}
+                                fullWidth
+                                SelectProps={{
+                                    multiple: true
+                                }}
+                                name='Tstack2'
+                                helperText='please select your Tech Stack '
+                            >
+                                <MenuItem value='Tech Stack 1, '>Tech Stack</MenuItem>
+                                <MenuItem value='Tech Stack 2, '>Tech Stack 2</MenuItem>
+                                <MenuItem value='Tech Stack 3, '>Tech Stack 3</MenuItem>
+                                <MenuItem value='Tech Stack 4, '>Tech Stack 4</MenuItem>
+
+                            </TextField>
+                        </Box>
+
+                    </div>
 
                             <div className="mb-3 mb-3 col-lg-6 col-md-6 col-12">
                                 <label for="exampleInputPassword1" className="form-label">Play Store</label>

@@ -36,44 +36,44 @@ const Addcontent = async (req, res) => {
 }
 
 //const SearchData = async (req, res) => {
-    // try {
-    //     const search = await AddPortfolio.findAll({
-    //         if (search) {
-    //             AddPortfolio.where('column_name.category', 'like', `%${search}%`) 
-    //                 // .orWhere('column_name.first_name', 'like', `%${search}%`) 
-    //                 // .orWhere('column_name.personal_email', 'like', `%${search}%`) 
-    //                 // .orWhere('column_name.work_email', 'like', `%${search}%`) 
-    //                 // .orWhere('column_name.office_name', 'like', `%${search}%`)
-    //         }
-    //     });
-    //     res.json(search);
-    // } catch (error) {
-    //     console.log(error);
-    // }
-    // var category = req.query.category;
-    // var sql;
-    
-    // if (category) {
-    //     var params = category.split(",");
-    //     sql = "SELECT * FROM AddPortfolios WHERE category IN " + params;
-    // } else {
-    //     sql = "SELECT * FROM AddPortfolios WHERE category =" + category;
-    // }
-    
-    // AddPortfolio.query(sql, function (error, results, fields) {
-    //     res.json({"status": 200, "error": null, "response": results});
-    // });
-        
+// try {
+//     const search = await AddPortfolio.findAll({
+//         if (search) {
+//             AddPortfolio.where('column_name.category', 'like', `%${search}%`) 
+//                 // .orWhere('column_name.first_name', 'like', `%${search}%`) 
+//                 // .orWhere('column_name.personal_email', 'like', `%${search}%`) 
+//                 // .orWhere('column_name.work_email', 'like', `%${search}%`) 
+//                 // .orWhere('column_name.office_name', 'like', `%${search}%`)
+//         }
+//     });
+//     res.json(search);
+// } catch (error) {
+//     console.log(error);
+// }
+// var category = req.query.category;
+// var sql;
 
-    // let result = await AddPortfolio.findAll({
-    //     "$or": [
-    //         { category: { $regex: req.params.key } },
-    //         { Tstack1: { $regex: req.params.key } },
-    //         { Tstack2: { $regex: req.params.key } }
-    //     ]
-    // });
-    // res.send(result)
-    //SELECT AddPortfolios.projectName FROM AddPortfolios WHERE AddPortfolios.category='' OR AddPortfolios.industry='';
+// if (category) {
+//     var params = category.split(",");
+//     sql = "SELECT * FROM AddPortfolios WHERE category IN " + params;
+// } else {
+//     sql = "SELECT * FROM AddPortfolios WHERE category =" + category;
+// }
+
+// AddPortfolio.query(sql, function (error, results, fields) {
+//     res.json({"status": 200, "error": null, "response": results});
+// });
+
+
+// let result = await AddPortfolio.findAll({
+//     "$or": [
+//         { category: { $regex: req.params.key } },
+//         { Tstack1: { $regex: req.params.key } },
+//         { Tstack2: { $regex: req.params.key } }
+//     ]
+// });
+// res.send(result)
+//SELECT AddPortfolios.projectName FROM AddPortfolios WHERE AddPortfolios.category='' OR AddPortfolios.industry='';
 //}
 // const SearchData1 = async (req, res) => {
 //     try {
@@ -89,7 +89,7 @@ const Addcontent = async (req, res) => {
 //         console.log(error);
 //     }
 // }
-// const SearchData2 = async (req, res) => {
+// const SearchData = async (req, res) => {
 //     try {
 //         const users = await AddPortfolio.findAll({
 //             "$or":[
@@ -103,7 +103,17 @@ const Addcontent = async (req, res) => {
 //         console.log(error);
 //     }
 // }
-
+// const SearchData = async (req, res) => {
+//     console.log(req.params.key);
+//     let data = await AddPortfolio.findAll(
+//         {
+//             "$or":[
+//                 { "projectName":{$regex:req.params.key}}
+//             ]
+//         }
+//     )
+//     res.send(data)
+// }
 
 
 const Update = async (req, res) => {

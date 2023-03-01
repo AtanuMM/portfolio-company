@@ -152,7 +152,7 @@ const Login = async (req, res) => {
         const refreshToken = jwt.sign({ userId, name, email }, process.env.REFRESH_TOKEN_SECRET, {
             expiresIn: '1d'
         });
-        console.log(refreshToken,'ln155');
+        console.log(refreshToken, 'ln155');
         await User.update({ refresh_token: refreshToken }, {
             where: {
                 id: userId
@@ -188,7 +188,33 @@ const Logout = async (req, res) => {
     res.clearCookie('refreshToken');
     return res.sendStatus(200);
 }
+const SearchUser = async (req, resp) => {
+    console.log(req.params.key);
+    let result = await User.findAll(
+     {
+        "$or":[
+            {"name":{$regex:req.params.key}}
+        ]
+     }
+    )
+    resp.json(result)
+}
+// const SearchUser = async (req, resp) => {
+//     console.log(req.params.key);
+//   try {
+//     let result = await User.findAll(
+//         {
+//            "$or":[
+//                {"name":{$regex:req.params.key}}
+//            ]
+//         }
+//        )
+//        return result;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 
 
-module.exports = { getUsers, Register, Login, Logout }
+module.exports = { getUsers, Register, Login, Logout, SearchUser }
